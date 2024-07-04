@@ -92,11 +92,11 @@ export async function recommendationSeeds(code: string) {
 }
 
 export async function fetchRecommendations(code: string): Promise<any> {
-  /*const seed_artists = (await recommendationSeeds(code)).seed_artists;
+  const seed_artists = (await recommendationSeeds(code)).seed_artists;
   const seed_genres = (await recommendationSeeds(code)).seed_genres;
-  const seed_track = (await recommendationSeeds(code)).seed_track;*/
+  const seed_track = (await recommendationSeeds(code)).seed_track;
   const result = await fetch(
-    `https://api.spotify.com/v1/recommendations?seed_artists=4NHQUGzhtTLFvgF5SZesLK&seed_genres=classical%2Ccountry&seed_tracks=0c6xIDDpzE81m2q797ordA`,
+    `https://api.spotify.com/v1/recommendations?seed_artists=${seed_artists}&seed_genres=${seed_genres}&seed_tracks=${seed_track}`,
     {
       method: "GET",
       headers: { Authorization: `Bearer ${code}` },
