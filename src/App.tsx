@@ -9,7 +9,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import { fetchProfile } from "./scripts/APIscript";
 
-import Layout from "./compontents/layout";
+import Layout from "./components/layout";
 import Artists from "./pages/artists";
 import Home from "./pages/home";
 import Tracks from "./pages/tracks";
