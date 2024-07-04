@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import Swipeable from "react-swipy";
 import { fetchRecommendations, playRecommended } from "../scripts/APIscript";
-import Loading from "../compontents/loading";
-import RecommentationCard from "../compontents/recommenationCard";
+import Loading from "../components/loading";
+import RecommentationCard from "../components/recommenationCard";
 
 const Recommendations = ({ accessToken }) => {
   const [data, setData] = useState(undefined);

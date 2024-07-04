@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import TrackCard from "../compontents/trackCard";
+import TrackCard from "../components/trackCard";
 import { fetchTracks } from "../scripts/APIscript";
 import { Link } from "react-router-dom";
-import Loading from "../compontents/loading";
+import Loading from "../components/loading";
 
 function Tracks({ accessToken }) {
   const [data, setData] = useState(undefined);
