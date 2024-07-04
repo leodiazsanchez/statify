@@ -7,61 +7,38 @@ import "./App.css";
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-import { fetchProfile } from "./scripts/APIscript";
-
 import Layout from "./components/layout";
 import Artists from "./pages/artists";
 import Home from "./pages/home";
 import Tracks from "./pages/tracks";
 import Recommendations from "./pages/recommendations";
 import NotFound from "./pages/notFound";
-import Callback from "./pages/callback";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [profile, setProfile] = useState(null);
-  const [accessToken, setAccessToken] = useState(null);
+  const [token, setToken] = useState('');
 
-  const signIn = async (accessToken : string) => {
-    setAccessToken(accessToken);
-    const profile = await fetchProfile(accessToken);
-    setProfile(profile);
-    setIsAuthenticated(true);
-  };
-
-  const signOut = () => {
-    setProfile(null);
-    setIsAuthenticated(false);
-    setAccessToken(null);
-    localStorage.removeItem("accessToken");
-  };
 
   useEffect(() => {
-    const tempToken = localStorage.getItem("accessToken");
-    if(tempToken){
-      try {
-        signIn(tempToken);
-      } catch {
-        signOut();
-      }
+
+    async function getToken() {
+      const response = await fetch('/auth/token');
+      const json = await response.json();
+      setToken(json.access_token);
     }
+
+    getToken();
+
   }, []);
 
   return (
     <Router>
-      <Layout authStatus={{ isAuthenticated, profile, signOut }}>
+      <Layout accessToken={token}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/artists" element={<Artists accessToken={accessToken}/>} />
-          <Route path="/tracks" element={<Tracks accessToken={accessToken}/>} />
-          <Route path="/recommendations" element={<Recommendations accessToken={accessToken}/>} />
-          <Route
-            path="/callback"
-            element={
-              <Callback signIn={signIn} />
-            }
-          />
-          <Route path="*" element={<NotFound />} />
+          <Route path="/artists" element={<Artists accessToken={token}/>} />
+          <Route path="/tracks" element={<Tracks accessToken={token}/>} />
+          <Route path="/recommendations" element={<Recommendations accessToken={token}/>} />
+          {/*<Route path="*" element={<NotFound />} />*/}
         </Routes>
       </Layout>
     </Router>

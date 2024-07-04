@@ -1,9 +1,24 @@
 import { NavLink, Link } from "react-router-dom";
-import {redirectToAuthCodeFlow, clientId} from "../scripts/authCodeWithPkce"
+import { useState, useEffect } from "react";
+import {fetchProfile} from "../scripts/APIscript"
 
-export const Navbar = ({authStatus}) => {
+export const Navbar = ({accessToken}) => {
 
-  const {profile, signOut } = authStatus;
+  const [profile, setProfile] = useState(null);
+
+  useEffect(() => {
+
+    async function getProfile() {
+      if(accessToken){
+        const profile = await fetchProfile(accessToken);
+        setProfile(profile);
+      }
+   
+    }
+
+    getProfile();
+
+  }, [accessToken]);
  
   return (
     <nav className="navbar navbar-expand-lg mx-5 pt-4 navbar-dark bg-dark">
@@ -95,20 +110,19 @@ export const Navbar = ({authStatus}) => {
                     </Link>
                   </li>
                   <li>
-                    <Link
+                    <a
                       className="dropdown-item"
-                      to="/"
-                      onClick={signOut}
+                      href="/auth/logout"
                     >
                       Logout
-                    </Link>
+                    </a>
                   </li>
                 </ul>
               </div>
             ) : (
-              <button className="btn signIn text-light fw-bold rounded-pill " onClick={() => redirectToAuthCodeFlow(clientId)}>
+              <a className="btn signIn text-light fw-bold rounded-pill" href="/auth/login">
                 Sign in
-              </button>
+              </a>
             )}
           </div>
         </div>

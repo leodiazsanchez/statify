@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import ArtistCard from "../components/artistCard";
 import { fetchArtists } from "../scripts/APIscript";
 import { Link } from "react-router-dom";
@@ -14,17 +14,18 @@ function Artists({ accessToken }) {
     getArtists(index);
   };
 
-  useEffect(() => {
-    getArtists(0);
-  }, [accessToken]);
-
-  function getArtists(termIndex) {
+  const getArtists = useCallback((termIndex) => {
     if (accessToken) {
       fetchArtists(accessToken, termIndex).then((data) => {
         setData(data);
       });
     }
-  }
+  }, [accessToken]);
+
+  useEffect(() => {
+    getArtists(0);
+  }, [accessToken, getArtists]);
+
 
   const ArtistList = () => {
     return (

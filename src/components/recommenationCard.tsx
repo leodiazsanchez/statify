@@ -4,7 +4,7 @@ function RecommentationCard({ track }) {
       <img
         className="card-img-top darken shadow"
         src={track.album.images[1].url}
-        alt="Card image cap"
+        alt="Album cover"
       />
       <div className="card-img-overlay d-flex flex-column justify-content-between mx-2 my-2">
         <div>

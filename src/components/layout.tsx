@@ -3,10 +3,10 @@ import React from 'react';
 import Navbar from './navbar';
 import Footer from './footer';
 
-const Layout = ({ authStatus, children }) => {
+const Layout = ({ accessToken, children }) => {
   return (
     <div>
-      <Navbar authStatus={authStatus}/>
+      <Navbar accessToken={accessToken}/>
       <main className="mx-5 my-5">
         {children}
       </main>
