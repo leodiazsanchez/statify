@@ -1,1 +1,3 @@
 # Spotify Analytics 🎧📊
+
+## Features ✨
