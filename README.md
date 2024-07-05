@@ -1,7 +1,7 @@
 # Spotify Analytics 🎧📊
 Welcome to Spotify Analytics, your one-stop solution for in-depth analysis of your Spotify listening habits. This project leverages the Spotify API to provide detailed insights and visualizations of your music preferences, listening trends, and more!
 
-## Features
+## Features ✨
 
 - **Top Tracks & Artists**: Discover your most-played songs and favorite artists.
 - **Listening History**: Visualize your listening history over different periods.
