@@ -3,6 +3,7 @@ import Swipeable from "react-swipy";
 import { fetchRecommendations, playRecommended } from "../scripts/APIscript";
 import Loading from "../components/loading";
 import RecommentationCard from "../components/recommenationCard";
+import WebPlayback from "../components/webPlayback";
 
 const Recommendations = ({ accessToken }) => {
   const [data, setData] = useState(undefined);
@@ -104,6 +105,7 @@ const Recommendations = ({ accessToken }) => {
       {data ? (
         <>
           <CardDeck></CardDeck>
+          {/*<WebPlayback token={accessToken}></WebPlayback>*/}
         </>
       ) : (
         <Loading></Loading>

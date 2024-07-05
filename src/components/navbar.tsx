@@ -13,7 +13,6 @@ export const Navbar = ({accessToken}) => {
         const profile = await fetchProfile(accessToken);
         setProfile(profile);
       }
-   
     }
 
     getProfile();
