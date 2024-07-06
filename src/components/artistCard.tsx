@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 function ArtistCard({ artist, index }) {
   return (
-    <Link to={artist.external_urls.spotify}>
+    <Link to={artist.external_urls.spotify} target="_blank" rel="noopener noreferrer">
       <div className="card bg-transparent shadow text-white artist zoom square-card">
         <img
           className="card-img darken artist-img"

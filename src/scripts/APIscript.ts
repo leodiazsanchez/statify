@@ -108,12 +108,12 @@ export async function fetchRecommendations(code: string): Promise<any> {
 
 //https://api.spotify.com/v1/recommendations?seed_artists=${seed_artists}&seed_genres=${seed_genres}&seed_tracks=${seed_track}
 
-export async function playRecommended(code: string, uri: string): Promise<any> {
+export async function playTrack(code: string, uri: string, deviceId: string): Promise<any> {
   const data = {
     uris: [uri],
   };
 
-  const response = await fetch(`https://api.spotify.com/v1/me/player/play`, {
+  const response = await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${code}`,
@@ -121,4 +121,16 @@ export async function playRecommended(code: string, uri: string): Promise<any> {
     },
     body: JSON.stringify(data),
   });
+}
+
+export async function fetchPlaylists(code: string): Promise<any> {
+  const result = await fetch(
+    `https://api.spotify.com/v1/me/playlists?limit=50&offset=0`,
+    {
+      method: "GET",
+      headers: { Authorization: `Bearer ${code}` },
+    }
+  );
+
+  return await result.json();
 }

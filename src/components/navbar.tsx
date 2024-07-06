@@ -20,7 +20,7 @@ export const Navbar = ({accessToken}) => {
   }, [accessToken]);
  
   return (
-    <nav className="navbar navbar-expand-lg mx-5 pt-4 navbar-dark bg-dark">
+    <nav className="navbar navbar-expand-lg mx-5 pt-4 navbar-dark">
       <div className="container-fluid">
         < NavLink className="navbar-brand" to="/">
           Spotify Analytics <i className="bi bi-bar-chart accent"></i>

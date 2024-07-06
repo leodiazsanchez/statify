@@ -1,8 +1,8 @@
 :root {
-  --primary-dark: #212529; /* Primary dark color */
-  --primary-mid: #234e5a; /* Primary mid color */
+  --primary-dark: #131213; /* Primary dark color */
+  --accent-dark: #137234; /* Accent color */
   --primary-light: #107c7c; /* Primary light color */
-  --accent: #3faa85; /* Accent color */
+  --accent: #1db954; /* Accent color */
 }
 
 body {
@@ -20,8 +20,13 @@ body {
   color: var(--primary-mid);
 }
 
-.spinner-color {
-  color: var(--primary-light);
+
+.text-accent-dark{
+  color: var(--accent-dark);
+}
+
+.text-accent{
+  color: var(--accent);
 }
 
 .accent {
@@ -33,7 +38,7 @@ body {
 }
 
 .profileButton {
-  background-color: var(--primary-mid);
+  background-color: var(--accent-dark);
 }
 
 .profileButton:hover {
@@ -155,6 +160,8 @@ a:hover {
 .card {
   position: relative;
   overflow: hidden;
+  cursor:pointer;
+  user-select: none;
 }
 
 .card-img-overlay {
@@ -200,7 +207,7 @@ a:hover {
   min-height: 50px;
   max-height: 50px;
   max-width: 50px;
-  background-color: var(--primary-mid);
+  background-color: var(--accent-dark);
   padding: 15px;
   margin-left: 5px;
 }
@@ -220,6 +227,108 @@ a:hover {
   z-index: -1;
 }
 
+.player {
+  background-color: #000000;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: fixed; /* Fixed position */
+}
+
+.main-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.now-playing{
+  width: 300px;
+}
+
+
+.now-playing__cover {
+  width: 50px;
+  height: 50px;
+  border-radius: 4px;
+}
+
+.now-playing__info {
+  flex-grow: 1;
+}
+
+.now-playing__name {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.now-playing__artist {
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.now-playing__name, .now-playing__artist {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.now-playing__controls {
+  display: flex;
+  align-items: center;
+}
+
+.btn-spotify {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #1db954;
+}
+
+.btn-spotify:focus {
+  outline: none;
+}
+
+.btn-spotify .bi {
+  vertical-align: middle;
+}
+
+.volume-controls {
+  width: 300px;
+  height: 3px;
+}
+
+.volume-controls input{
+  accent-color: var(--accent);
+}
+
+.volume-controls input::-webkit-slider-thumb{
+}
+
+
+.progress-bar input{
+  width: 800px;
+  accent-color: #ccc;
+}
+
+.progress-bar input::-webkit-slider-thumb{
+  height: 5px;
+}
+
+.progress-bar input::-webkit-slider-runnable-track{
+
+}
+
+.dropdown-item:focus, .dropdown-item:active {
+  background-color: transparent !important;
+  color: inherit !important;
+  box-shadow: none !important;
+}
+
+.btn-nav{
+  background: none;
+	border: none;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+}
 
 ::-webkit-scrollbar {
   width: 10px;
@@ -232,11 +341,11 @@ a:hover {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: var(--accent);
+  background: #303131;
   border-radius: 5px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-light);
+  background: #5a5757;
 }

@@ -1,9 +1,13 @@
 import { Link } from "react-router-dom";
+import { playTrack } from "../scripts/APIscript";
 
-function TrackCard({ track, index }) {
+function TrackCard({ token, deviceId, track, index }) {
   return (
-    <Link to={track.external_urls.spotify}>
-      <div className="card h-100 bg-transparent shadow text-white artist zoom">
+    <div>
+      <div
+        className="card h-100 bg-transparent shadow text-white artist zoom"
+        onClick={() => playTrack(token, track.uri, deviceId)}
+      >
         <img
           className="card-img darken artist-img"
           src={track.album.images[0].url}
@@ -29,7 +33,7 @@ function TrackCard({ track, index }) {
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
 
