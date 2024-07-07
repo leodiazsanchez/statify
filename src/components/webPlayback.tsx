@@ -15,7 +15,7 @@ function WebPlayback(props) {
   const [is_active, setActive] = useState(false);
   const [player, setPlayer] = useState(undefined);
   const [current_track, setTrack] = useState(track);
-  const [volume, setVolume] = useState(50);
+  const [volume, setVolume] = useState(30);
   const [position, setPosition] = useState(0);
   const [duration, setDuration] = useState(0);
 
@@ -38,13 +38,18 @@ function WebPlayback(props) {
 
     document.body.appendChild(script);
 
+    script.onerror = function () {
+      // Prevent the default console output
+      return true;
+    };
+
     window.onSpotifyWebPlaybackSDKReady = () => {
       const player = new window.Spotify.Player({
         name: "Spotify Analytics",
         getOAuthToken: (cb) => {
           cb(props.token);
         },
-        volume: 0.5,
+        volume: 0.3,
       });
 
       setPlayer(player);
@@ -77,11 +82,11 @@ function WebPlayback(props) {
 
       player.connect();
 
-      player.getVolume().then((volume) => {
+      /*player.getVolume().then((volume) => {
         let volume_percentage = volume * 100;
         setVolume(volume_percentage);
         console.log(`The volume of the player is ${volume_percentage}%`);
-      });
+      });*/
     };
   }, []);
 
@@ -131,14 +136,14 @@ function WebPlayback(props) {
 
           <div className="d-flex flex-column align-items-center ml-auto">
             <div className="now-playing__controls ">
-              <button
+              {/*<button
                 className="btn-spotify"
                 onClick={() => {
                   player.previousTrack();
                 }}
               >
                 <i className="bi bi-skip-backward"></i>
-              </button>
+              </button>*/}
               <button
                 className="btn-spotify mx-2"
                 onClick={() => {
@@ -151,17 +156,17 @@ function WebPlayback(props) {
                   <i className="bi bi-pause-circle-fill fs-2"></i>
                 )}
               </button>
-              <button
+              {/*<button
                 className="btn-spotify"
                 onClick={() => {
                   player.nextTrack();
                 }}
               >
                 <i className="bi bi-skip-forward"></i>
-              </button>
+              </button>*/}
             </div>
             <div className="progress-bar d-flex flex-row justify-content-between align-items-center mx-auto">
-              <span className="me-2">{formatTime(position)}</span>
+              <span className="me-2 fs-6">{formatTime(position)}</span>
               <input
                 type="range"
                 min="0"
@@ -176,7 +181,13 @@ function WebPlayback(props) {
           </div>
 
           <div className="volume-controls d-flex align-items-center justify-content-end mx-3">
-            <i className="bi bi-volume-down fs-4"></i>
+            {volume == 0 ? (
+              <i className="bi bi-volume-mute fs-4"></i>
+            ) : volume < 50 ? (
+              <i className="bi bi-volume-down fs-4"></i>
+            ) : (
+              <i className="bi bi-volume-up fs-4"></i>
+            )}
             <input
               type="range"
               className="slider ms-2 accent"

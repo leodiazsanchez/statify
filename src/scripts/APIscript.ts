@@ -91,12 +91,12 @@ export async function recommendationSeeds(code: string) {
   return {seed_artists, seed_genres, seed_track};
 }
 
-export async function fetchRecommendations(code: string): Promise<any> {
+export async function fetchRecommendations(code: string, seed_artists: string): Promise<any> {
   /*const seed_artists = (await recommendationSeeds(code)).seed_artists;
   const seed_genres = (await recommendationSeeds(code)).seed_genres;
   const seed_track = (await recommendationSeeds(code)).seed_track;*/
   const result = await fetch(
-    `https://api.spotify.com/v1/recommendations?seed_artists=4NHQUGzhtTLFvgF5SZesLK&seed_genres=classical%2Ccountry&seed_tracks=0c6xIDDpzE81m2q797ordA`,
+    `https://api.spotify.com/v1/recommendations?seed_artists=${seed_artists}&limit=50`,
     {
       method: "GET",
       headers: { Authorization: `Bearer ${code}` },
@@ -113,8 +113,23 @@ export async function playTrack(code: string, uri: string, deviceId: string): Pr
     uris: [uri],
   };
 
-  const response = await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
+  await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
     method: "PUT",
+    headers: {
+      Authorization: `Bearer ${code}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+}
+
+export async function addTracks(code: string, playlist_id: string, uris: string[]): Promise<any> {
+  const data = {
+    uris: "",
+  };
+
+  await fetch(`https://api.spotify.com/v1/playlists/${playlist_id}/tracks `, {
+    method: "POST",
     headers: {
       Authorization: `Bearer ${code}`,
       "Content-Type": "application/json",
@@ -126,6 +141,18 @@ export async function playTrack(code: string, uri: string, deviceId: string): Pr
 export async function fetchPlaylists(code: string): Promise<any> {
   const result = await fetch(
     `https://api.spotify.com/v1/me/playlists?limit=50&offset=0`,
+    {
+      method: "GET",
+      headers: { Authorization: `Bearer ${code}` },
+    }
+  );
+
+  return await result.json();
+}
+
+export async function fetchPlaylist(code: string, playlist_id : string): Promise<any> {
+  const result = await fetch(
+    `https://api.spotify.com/v1/playlists/${playlist_id}`,
     {
       method: "GET",
       headers: { Authorization: `Bearer ${code}` },

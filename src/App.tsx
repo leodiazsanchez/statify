@@ -18,29 +18,41 @@ import WebPlayback from "./components/webPlayback";
 function App() {
   const [token, setToken] = useState("");
   const [refreshToken, setRefreshToken] = useState("");
+  const [expiresIn, setExpiresIn] = useState();
   const [deviceId, setDeviceId] = useState(null);
 
   useEffect(() => {
     async function getToken() {
-      try {
-        const response = await fetch("/auth/token");
-        if (!response.ok) throw new Error("Failed to fetch token");
-        const json = await response.json();
-        setToken(json.access_token);
-      } catch (error) {
-        await getRefreshToken();
-      }
-    }
-
-    async function getRefreshToken() {
-      const response = await fetch("/auth/refresh_token");
-      if (!response.ok) throw new Error("Failed to fetch refresh token");
+      const response = await fetch("/auth/token");
       const json = await response.json();
       setToken(json.access_token);
     }
 
     getToken();
   }, []);
+
+  useEffect(() => {
+    if (!refreshToken || !expiresIn) return;
+    const interval = setInterval(() => {
+      fetch("http://localhost:3001/refresh", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ refreshToken }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setToken(data.accessToken);
+          setExpiresIn(data.expiresIn);
+        })
+        .catch(() => {
+          document.location = "/";
+        });
+    }, (expiresIn - 60) * 1000);
+
+    return () => clearInterval(interval);
+  }, [refreshToken, expiresIn]);
 
   const handleDeviceIdReady = (id) => {
     console.log("Received Device ID from WebPlayback component:", id);
@@ -59,7 +71,9 @@ function App() {
           />
           <Route
             path="/recommendations"
-            element={<Recommendations accessToken={token} deviceId={deviceId}/>}
+            element={
+              <Recommendations accessToken={token} deviceId={deviceId} />
+            }
           />
           <Route path="*" element={<NotFound />} />
         </Routes>

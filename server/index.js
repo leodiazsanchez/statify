@@ -28,7 +28,7 @@ var app = express();
 
 app.get("/login", (req, res) => {
   var scope =
-    "streaming user-read-private user-read-email user-top-read user-read-playback-state user-modify-playback-state";
+    "streaming user-read-private user-read-email user-top-read user-read-playback-state user-modify-playback-state playlist-read-private";
   var state = generateRandomString(16);
 
   var auth_query_parameters = new URLSearchParams({
