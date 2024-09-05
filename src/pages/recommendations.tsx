@@ -4,7 +4,7 @@ import {
   playTrack,
   fetchPlaylists,
   fetchPlaylist,
-  fetchAvalibleGenres,
+  addTracks,
 } from "../scripts/APIscript";
 import Loading from "../components/loading";
 import RecommentationCard from "../components/recommenationCard";
@@ -16,92 +16,110 @@ const Recommendations = ({ accessToken, deviceId }) => {
   const [playlists, setPlaylists] = useState(undefined);
   const [activePlaylist, setActivePlaylist] = useState(undefined);
   const [activePlaylistSeed, setActivePlaylistSeed] = useState(undefined);
-  const [lastDirection, setLastDirection] = useState();
-  const [avalibleGenres, setAvalibleGenres] = useState(undefined);
 
   useEffect(() => {
     setData();
-  }, []);
+  }, [accessToken]);
+
+  useEffect(() => {
+    if (activePlaylistSeed) {
+      fetchRecommendationsData();
+    }
+  }, [activePlaylistSeed]);
 
   async function setData() {
     if (accessToken) {
-      await fetchPlaylists(accessToken).then((data) => {
-        setPlaylists(data.items);
-        handlePlaylist(data.items[0]);
-      });
-
-      /*await fetchAvalibleGenres(accessToken).then((data) => {
-        setAvalibleGenres(data);
-      });*/
-
-      await fetchRecommendations(accessToken, artists_seed()).then((data) => {
-        setTracks(data.tracks);
-      });
+      try {
+        const playlistData = await fetchPlaylists(accessToken);
+        setPlaylists(playlistData.items);
+        handlePlaylist(playlistData.items[0]);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     }
   }
 
   async function handlePlaylist(playlist) {
     setActivePlaylist(playlist);
-    setActivePlaylistSeed(await fetchPlaylist(accessToken, playlist.id));
+    const playlistSeed = await fetchPlaylist(accessToken, playlist.id);
+    setActivePlaylistSeed(playlistSeed);
+    setTracks(undefined);
   }
 
-  // Function to get a random sample from an array
-  function getRandomSample<T>(array: T[], sampleSize: number): T[] {
-    const shuffled = array.sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, sampleSize);
+  async function fetchRecommendationsData() {
+    try {
+      const recommendationsData = await fetchRecommendations(
+        accessToken,
+        artists_seed()
+      );
+      setTracks(recommendationsData.tracks);
+    } catch (error) {
+      console.error("Error fetching recommendations:", error);
+    }
+  }
+
+  function getRandomSample(arr, sampleSize) {
+    const result = new Set();
+    while (result.size < sampleSize) {
+      const randomIndex = Math.floor(Math.random() * arr.length);
+      result.add(arr[randomIndex]);
+    }
+    return Array.from(result);
   }
 
   function artists_seed() {
-    const artists: string[] = [];
+    const artists = [];
 
     try {
-      // Assuming fetchPlaylist returns a Promise that resolves to a playlist object
-
-      // Assuming playlist.tracks is an array of track objects
-      activePlaylistSeed.tracks.items.map((item: any) => {
-        // Assuming track.artists is an array of artist objects, and we want the first artist's name
+      activePlaylistSeed.tracks.items.map((item) => {
         item.track.artists.map((artist) => {
-          artists.push(artist.name);
+          artists.push(artist.id);
         });
       });
-      const artistNames = getRandomSample(artists, 6).join(", ");
-      console.log(artistNames)
-      return artistNames;
+      const artistIds = getRandomSample(artists, 5).join(",");
+      console.log(artistIds);
+      return artistIds;
     } catch (error) {
       console.error("Error fetching or processing playlist:", error);
-      return ""; // or handle error accordingly
+      return "";
     }
   }
 
   function remove() {
     setTracks((prevTracks) => {
-      setPrev(prevTracks[0]); // Set prev to the removed item
-      return prevTracks.slice(1); // Remove the first item from tracks
+      setPrev(prevTracks[0]);
+      return prevTracks.slice(1);
     });
   }
 
   function back() {
     if (prev !== undefined) {
       setTracks((prevTracks) => [prev, ...prevTracks]);
-      setPrev(undefined); // Clear prev after setting it back to tracks[0]
+      setPrev(undefined);
     }
   }
 
-  const swiped = (direction, nameToDelete) => {
+  async function swiped(direction) {
+    console.log(direction);
+    if (direction === "right") {
+      console.log(tracks[0].id);
+      await addTracks(
+        accessToken,
+        activePlaylist.id,
+        "spotify:track:" + tracks[0].id
+      );
+    }
     remove();
-    setLastDirection(direction);
-  };
+  }
 
-  const outOfFrame = (name) => {
-    /*console.log(name + " left the screen!");*/
-  };
+  const outOfFrame = (name) => {};
 
   const CardDeck = () => {
     useEffect(() => {
       if (tracks && playlists) {
         playTrack(accessToken, tracks[0].uri, deviceId);
       }
-    }, []);
+    }, [tracks]);
 
     return (
       <>
@@ -140,28 +158,31 @@ const Recommendations = ({ accessToken, deviceId }) => {
               {tracks ? (
                 <div className="recommendations">
                   <div className="recommendations-wrapper">
-                    {tracks.length > 1 && (
-                      <TinderCard
-                        className="swipe"
-                        key={tracks[1].id} // Use unique key from track id
-                        onSwipe={(dir) => swiped(dir, tracks[1].name)}
-                        onCardLeftScreen={() => outOfFrame(tracks[1].name)}
-                      >
-                        <RecommentationCard
-                          track={tracks[1]}
-                        ></RecommentationCard>
-                      </TinderCard>
-                    )}
-                    <TinderCard
-                      className="swipe"
-                      key={tracks[0].id} // Use unique key from track id
-                      onSwipe={(dir) => swiped(dir, tracks[0].name)}
-                      onCardLeftScreen={() => outOfFrame(tracks[0].name)}
-                    >
-                      <RecommentationCard
-                        track={tracks[0]}
-                      ></RecommentationCard>
-                    </TinderCard>
+                    {tracks.length > 1 ? (
+                      <>
+                        <TinderCard
+                          className="swipe"
+                          key={tracks[1].id}
+                          onSwipe={(dir) => swiped(dir)}
+                          onCardLeftScreen={() => outOfFrame(tracks[1].name)}
+                        >
+                          <RecommentationCard
+                            track={tracks[1]}
+                          ></RecommentationCard>
+                        </TinderCard>
+
+                        <TinderCard
+                          className="swipe"
+                          key={tracks[0].id}
+                          onSwipe={(dir) => swiped(dir)}
+                          onCardLeftScreen={() => outOfFrame(tracks[0].name)}
+                        >
+                          <RecommentationCard
+                            track={tracks[0]}
+                          ></RecommentationCard>
+                        </TinderCard>
+                      </>
+                    ) : (<button className="btn btn-danger"onClick={() => fetchRecommendationsData()}>Load more</button>)}
                   </div>
                 </div>
               ) : (
@@ -176,7 +197,7 @@ const Recommendations = ({ accessToken, deviceId }) => {
 
   return (
     <div>
-      {(playlists) ? (
+      {playlists ? (
         <>
           <CardDeck></CardDeck>
         </>

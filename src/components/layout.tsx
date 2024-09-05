@@ -6,7 +6,7 @@ const Layout = ({ accessToken, children }) => {
   return (
     <div>
       <Navbar accessToken={accessToken} />
-      <main className="my-5 mx-5 pb-5">{children}</main>
+      <main className="py-5 px-5 pb-5">{children}</main>
       {/*!accessToken && <Footer />*/}
     </div>
   );
