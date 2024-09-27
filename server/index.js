@@ -1,6 +1,7 @@
 const express = require("express");
 const request = require("request");
 const dotenv = require("dotenv");
+const { access } = require("fs");
 
 const port = 5000;
 
@@ -8,8 +9,8 @@ global.access_token = "";
 
 dotenv.config();
 
-var spotify_client_id = process.env.SPOTIFY_CLIENT_ID;
-var spotify_client_secret = process.env.SPOTIFY_CLIENT_SECRET;
+var spotify_client_id = 'e5f9bfa9d40447488e4fc74d2c71d293';
+var spotify_client_secret = 'be7abe1d68da450a92e9bd87ce439146';
 
 var spotify_redirect_uri = "http://localhost:3000/auth/callback";
 
@@ -36,7 +37,7 @@ app.get("/login", (req, res) => {
     client_id: spotify_client_id,
     scope: scope,
     redirect_uri: spotify_redirect_uri,
-    state: state,
+    state: state, 
   });
 
   res.redirect(
@@ -46,8 +47,8 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
-  access_token = ""; // Clear the access token
-  res.redirect("/"); // Redirect to home or login page after logout
+  access_token = "";
+  res.redirect("/"); 
 });
 
 app.get("/callback", (req, res) => {

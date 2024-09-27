@@ -22,6 +22,12 @@ const Recommendations = ({ accessToken, deviceId }) => {
   }, [accessToken]);
 
   useEffect(() => {
+    if (tracks && playlists) {
+      playTrack(accessToken, tracks[0].uri, deviceId);
+    }
+  }, [tracks]);
+
+  useEffect(() => {
     if (activePlaylistSeed) {
       fetchRecommendationsData();
     }
@@ -115,11 +121,6 @@ const Recommendations = ({ accessToken, deviceId }) => {
   const outOfFrame = (name) => {};
 
   const CardDeck = () => {
-    useEffect(() => {
-      if (tracks && playlists) {
-        playTrack(accessToken, tracks[0].uri, deviceId);
-      }
-    }, [tracks]);
 
     return (
       <>

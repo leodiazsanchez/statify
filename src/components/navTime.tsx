@@ -4,7 +4,7 @@ const NavTime = ({ handleClick }) => {
   const [activeTab, setActiveTab] = useState(0);
 
   return (
-    <ul className="nav justify-content-between mb-4 d-flex align-items-center w-25 m-auto">
+    <ul className="nav justify-content-center mb-4 gap-5 d-flex align-items-center m-auto">
       <li className="nav-item">
         <button
           className={`btn-nav ${activeTab === 0 ? "text-accent fs-5 fw-bold" : "text-light"}`}

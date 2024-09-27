@@ -69,17 +69,17 @@ export const Navbar = ({accessToken}) => {
                 aria-labelledby="navbarDropdown"
               >
                 <li>
-                  <Link className="dropdown-item" to="/">
+                  <Link className="dropdown-item" to="/charts/artists">
                     Artists
                   </Link>
                 </li>
                 <li>
-                  <Link className="dropdown-item" to="/">
+                  <Link className="dropdown-item" to="/charts/tracks">
                     Tracks
                   </Link>
                 </li>
                 <li>
-                  <Link className="dropdown-item" to="/">
+                  <Link className="dropdown-item" to="/charts/genres">
                     Genres
                   </Link>
                 </li>

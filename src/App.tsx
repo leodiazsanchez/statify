@@ -13,12 +13,19 @@ import Home from "./pages/home";
 import Tracks from "./pages/tracks";
 import Recommendations from "./pages/recommendations";
 import NotFound from "./pages/notFound";
-
 import WebPlayback from "./components/webPlayback";
+import Charts from "./pages/charts";
+
+let trackPlaying = false;
+
+export function setTrackPlaying(value : boolean) {
+  trackPlaying = value;
+}
+
 function App() {
   const [token, setToken] = useState("");
-  const [refreshToken, setRefreshToken] = useState("");
-  const [expiresIn, setExpiresIn] = useState();
+  /*const [refreshToken, setRefreshToken] = useState("");
+  const [expiresIn, setExpiresIn] = useState();*/
   const [deviceId, setDeviceId] = useState(null);
 
   useEffect(() => {
@@ -27,11 +34,12 @@ function App() {
       const json = await response.json();
       setToken(json.access_token);
     }
-
+   
     getToken();
+    setTrackPlaying(false)
   }, []);
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (!refreshToken || !expiresIn) return;
     const interval = setInterval(() => {
       fetch("http://localhost:3001/refresh", {
@@ -52,7 +60,7 @@ function App() {
     }, (expiresIn - 60) * 1000);
 
     return () => clearInterval(interval);
-  }, [refreshToken, expiresIn]);
+  }, [refreshToken, expiresIn]);*/
 
   const handleDeviceIdReady = (id) => {
     console.log("Received Device ID from WebPlayback component:", id);
@@ -61,7 +69,7 @@ function App() {
 
   return (
     <Router>
-      <Layout accessToken={token}>
+      <Layout accessToken={token} trackPlaying={trackPlaying}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/artists" element={<Artists accessToken={token} />} />
@@ -73,6 +81,12 @@ function App() {
             path="/recommendations"
             element={
               <Recommendations accessToken={token} deviceId={deviceId} />
+            }
+          />
+           <Route
+            path="/charts/:page"
+            element={
+              <Charts accessToken={token}/>
             }
           />
           <Route path="*" element={<NotFound />} />

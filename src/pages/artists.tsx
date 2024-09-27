@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import ArtistCard from "../components/artistCard";
 import { fetchArtists } from "../scripts/APIscript";
-import { Link } from "react-router-dom";
 import Loading from "../components/loading";
 import NavTime from "../components/navTime";
 
