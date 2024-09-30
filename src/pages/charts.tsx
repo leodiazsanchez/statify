@@ -49,11 +49,11 @@ function Charts({ accessToken }: { accessToken: string }) {
         const chartConfig: ChartConfiguration = {
           type: "doughnut",
           data: {
-            labels: labels.slice(0, 10),
+            labels: labels.slice(0, 3),
             datasets: [
               {
                 label: "Genre Distribution",
-                data: genreData.slice(0, 10),
+                data: genreData.slice(0, 3),
                 hoverOffset: 4,
               },
             ],

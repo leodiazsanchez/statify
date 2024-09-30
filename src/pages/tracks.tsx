@@ -16,7 +16,7 @@ function Tracks({ accessToken, deviceId }) {
     getTracks(0);
   }, [accessToken]);
 
-  function getTracks(termIndex) {
+  async function getTracks(termIndex) {
     if (accessToken) {
       fetchTracks(accessToken, termIndex).then((data) => {
         setData(data);

@@ -76,6 +76,8 @@ app.get("/callback", (req, res) => {
     if (!error && response.statusCode === 200) {
       access_token = body.access_token;
       res.redirect("/");
+    }  else {
+      console.log('Invalid response while fetcing token!', response.statusText);
     }
   });
 });
@@ -113,6 +115,7 @@ app.get("/refresh_token", function (req, res) {
     }
   });
 });
+
 
 app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}`);

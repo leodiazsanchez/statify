@@ -72,11 +72,10 @@ function WebPlayback(props) {
 
         player.getCurrentState().then((state) => {
           !state ? setActive(false) : setActive(true);
-     
         });
       });
 
-      player.connect(); 
+      player.connect();
     };
   }, []);
 
@@ -128,27 +127,27 @@ function WebPlayback(props) {
     return <></>;
   } else if (current_track) {
     return (
-      <div className="player fixed-bottom">
-        <div className="main-wrapper d-flex align-items-center justify-content-between">
-          <div className="now-playing d-flex align-items-center">
+      <div className="player fixed-bottom rounded">
+        <div className="main-wrapper d-flex align-items-center justify-content-between gap-3">
+          <div className="now-playing d-flex align-items-center flex-grow-1">
             <img
               src={current_track.album.images[0].url}
               className="now-playing__cover"
               alt=""
             />
-            <div className="now-playing__info d-flex flex-column justify-content-center mx-3">
-              <div className="now-playing__name text-truncate">
+            <div className="now-playing__info d-flex flex-column justify-content-center ms-3">
+              <div className="now-playing__name shorten-text">
                 {current_track.name}
               </div>
-              <div className="now-playing__artist text-truncate">
+              <div className="now-playing__artist shorten-text">
                 {current_track.artists[0].name}
               </div>
             </div>
           </div>
 
-          <div className="d-flex flex-column align-items-center ml-auto">
+          <div className="d-flex flex-column align-items-end">
             <div className="now-playing__controls">
-              <button className="btn-spotify" onClick={handleSkipBackward}>
+              {/*<button className="btn-spotify" onClick={handleSkipBackward}>
                 <svg
                   width="30px"
                   height="30px"
@@ -179,20 +178,20 @@ function WebPlayback(props) {
                     stroke-linejoin="round"
                   />
                 </svg>
-              </button>
+              </button>*/}
               <button
-                className="btn-spotify mx-2"
+                className="btn-spotify"
                 onClick={() => {
                   player.togglePlay();
                 }}
               >
                 {is_paused ? (
-                  <i className="bi bi-play-circle-fill fs-2"></i>
+                  <i className="bi bi-play-fill fs-3"></i>
                 ) : (
-                  <i className="bi bi-pause-circle-fill fs-2"></i>
+                  <i className="bi bi-pause-fill fs-3"></i>
                 )}
               </button>
-              <button className="btn-spotify" onClick={handleSkipForward}>
+              {/*<button className="btn-spotify" onClick={handleSkipForward}>
                 <svg
                   width="30px"
                   height="30px"
@@ -223,25 +222,12 @@ function WebPlayback(props) {
                     stroke-linejoin="round"
                   />
                 </svg>
-              </button>
-            </div>
-            <div className="progress-bar d-flex flex-row justify-content-between align-items-center mx-auto">
-              <span className="me-2 fs-6">{formatTime(position)}</span>
-              <input
-                type="range"
-                min="0"
-                max={duration}
-                value={position}
-                onChange={handleProgressChange}
-              />
-              <span className="ms-2">
-                {formatTime(current_track.duration_ms)}
-              </span>
+              </button>*/}
             </div>
           </div>
 
-          <div className="volume-controls d-flex align-items-center justify-content-end mx-3">
-            {volume === 0 ? (
+          {/*<div className="volume-controls d-flex align-items-center justify-content-end mx-3">
+            {volume == 0 ? (
               <i className="bi bi-volume-mute fs-4"></i>
             ) : volume < 50 ? (
               <i className="bi bi-volume-down fs-4"></i>
@@ -256,12 +242,19 @@ function WebPlayback(props) {
               value={volume}
               onChange={handleVolumeChange}
             />
-          </div>
+          </div>*/}
         </div>
+        <input
+            className="progress-bar"
+            type="range"
+            min="0"
+            max={duration}
+            value={position}
+            onChange={handleProgressChange}
+          />
       </div>
     );
   }
 }
 
 export default WebPlayback;
-
