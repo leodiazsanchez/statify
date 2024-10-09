@@ -38,7 +38,7 @@ const Recommendations = ({ accessToken, deviceId }) => {
       try {
         const playlistData = await fetchPlaylists(accessToken);
         setPlaylists(playlistData.items);
-        handlePlaylist(playlistData.items[0]);
+        await handlePlaylist(playlistData.items[0]);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
