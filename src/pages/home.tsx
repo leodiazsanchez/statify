@@ -5,7 +5,9 @@ function Home() {
     <>
       <header className="text-white text-center py-5">
         <div className="container">
-          <h1 className="display-4">Spotify Analytics <i className="bi bi-bar-chart accent"></i></h1>
+          <h1 className="display-4">
+            Spotify Analytics <i className="bi bi-bar-chart accent"></i>
+          </h1>
           <p className="lead">The Ultimate Music Data Experience</p>
         </div>
       </header>
@@ -90,7 +92,6 @@ function Home() {
           </div>
         </div>
       </section>
-      <Footer />
     </>
   );
 }

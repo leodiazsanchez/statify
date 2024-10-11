@@ -13,16 +13,9 @@ body {
   height: 100vh; /* Ensures the body takes up the full height of the viewport */
 }
 
-main{
-  overflow-y:auto;
-}
-
-.active-track{
-  height: calc(100vh - 100px);
-}
-
-.inactive-track {
-  height:100vh ;
+main {
+  overflow-y: auto;
+  height: calc(100vh - 80px);
 }
 
 .profilePic {
@@ -227,7 +220,7 @@ main{
   padding: 10px 10px 0 10px;
   margin-bottom: 30px;
   box-shadow: 0 2px 5px rgba(61, 58, 58, 0.247);
-  position: fixed; /* Fixed position */ 
+  position: fixed; /* Fixed position */
 }
 
 .main-wrapper {
@@ -235,14 +228,11 @@ main{
   align-items: center;
 }
 
-
-
 .now-playing__cover {
   width: 40px;
   height: 40px;
   border-radius: 4px;
 }
-
 
 .now-playing__name {
   font-size: 1rem;
@@ -253,7 +243,6 @@ main{
   color: #6c757d;
 }
 
-
 .now-playing__controls {
   display: flex;
   align-items: center;
@@ -263,7 +252,7 @@ main{
   background: none;
   border: none;
   padding: 0;
-  color:#fff;
+  color: #fff;
 }
 
 .btn-spotify:focus {
@@ -283,48 +272,48 @@ main{
 }
 
 /* Reset the ranger slider's default apperance */
-input[type=range],
-input[type=range]::-webkit-slider-runnable-track,
-input[type=range]::-webkit-slider-thumb {
- 	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
-	font: inherit;
+input[type="range"],
+input[type="range"]::-webkit-slider-runnable-track,
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  font: inherit;
 }
 
 /* The custom range slider bar */
 .progress-bar {
-	width: 100%;
-	height: 2px;
-	margin-top: 0.5em;
-	background-color: rgba(240, 237, 237, 0.2);
-	border-radius: 0.25em;
-	overflow: hidden;
-  cursor:pointer;
+  width: 100%;
+  height: 3px;
+  margin-top: 0.5em;
+  background-color: rgba(240, 237, 237, 0.2);
+  border-radius: 0.25em;
+  overflow: hidden;
+  cursor: pointer;
 }
 
 /* The "thumb" (draggable) */
 .progress-bar::-webkit-slider-thumb {
   appearance: none;
-	width: 0;
-	height: 0;
-	border-radius: 0;
-	
-	/* This property adds the "tail" on the left of the thumb, remove it and test to see how it works */
-	box-shadow: -100vw 0 0 100vw #fff;
+  width: 0;
+  height: 0;
+  border-radius: 0;
+
+  /* This property adds the "tail" on the left of the thumb, remove it and test to see how it works */
+  box-shadow: -100vw 0 0 100vw #fff;
 }
 
 /* Mozilla compatibility has to be written separately from the Chrome/Safari version above, for some reason. If you require it, be sure to include this rule, updating it to match the rule above */
 .progress-bar::-moz-range-thumb {
   appearance: none;
-	width: 0;
-	height: 0;
-	
-	/* This property adds the "tail" on the left of the thumb, remove it and test to see how it works */
-	box-shadow: -100vw 0 0 100vw #fff;
-	
-	/* Note: firefox adds a border to the thumb, so this is required to remove it */
-	border: none; 
+  width: 0;
+  height: 0;
+
+  /* This property adds the "tail" on the left of the thumb, remove it and test to see how it works */
+  box-shadow: -100vw 0 0 100vw #fff;
+
+  /* Note: firefox adds a border to the thumb, so this is required to remove it */
+  border: none;
 }
 
 .dropdown-item:focus,
