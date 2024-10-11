@@ -19,12 +19,19 @@ function Charts() {
   Chart.register(Colors);
   const accessToken = "";
 
-  /*const fetchAndProcessArtists = async (index: number) => {
-    if (accessToken) {
-      const res = await fetchArtists(accessToken, index);
-      setArtists(res.items);
+  const fetchAndProcessArtists = async (index: number) => {
+    try {
+      // Fetching from the Express server instead of directly from Spotify
+      const res = await fetch(`/auth/artists/${index}`);
 
-      const genres: string[] = res.items.flatMap((artist: any) =>
+      if (!res.ok) {
+        throw new Error("Failed to fetch profile");
+      }
+
+      const json = await res.json(); // Parse response as JSON
+      setArtists(json.artists);
+
+      const genres: string[] = json.artists.items.flatMap((artist: any) =>
         artist.genres.map((genre: string) =>
           genre
             .split(" ")
@@ -43,6 +50,8 @@ function Charts() {
       const sortedGenres = sortDictByValue(genreCount);
       setLabels(Object.keys(sortedGenres));
       setGenreData(Object.values(sortedGenres));
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -129,7 +138,7 @@ function Charts() {
         </div>
       )}
     </>
-  );*/
+  );
 }
 
 export default Charts;
