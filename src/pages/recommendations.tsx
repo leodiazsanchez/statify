@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  fetchRecommendations,
   playTrack,
   fetchPlaylists,
   fetchPlaylist,
@@ -10,12 +9,14 @@ import Loading from "../components/loading";
 import RecommentationCard from "../components/recommenationCard";
 import TinderCard from "react-tinder-card";
 
-const Recommendations = ({ accessToken, deviceId }) => {
+const Recommendations = () => {
   const [tracks, setTracks] = useState(undefined);
   const [prev, setPrev] = useState(undefined);
   const [playlists, setPlaylists] = useState(undefined);
   const [activePlaylist, setActivePlaylist] = useState(undefined);
   const [activePlaylistSeed, setActivePlaylistSeed] = useState(undefined);
+  const accessToken = "";
+  const deviceId = "";
 
   useEffect(() => {
     setData();
@@ -121,7 +122,6 @@ const Recommendations = ({ accessToken, deviceId }) => {
   const outOfFrame = (name) => {};
 
   const CardDeck = () => {
-
     return (
       <>
         <div className="container-fluid">
@@ -183,7 +183,14 @@ const Recommendations = ({ accessToken, deviceId }) => {
                           ></RecommentationCard>
                         </TinderCard>
                       </>
-                    ) : (<button className="btn btn-danger"onClick={() => fetchRecommendationsData()}>Load more</button>)}
+                    ) : (
+                      <button
+                        className="btn btn-danger"
+                        onClick={() => fetchRecommendationsData()}
+                      >
+                        Load more
+                      </button>
+                    )}
                   </div>
                 </div>
               ) : (

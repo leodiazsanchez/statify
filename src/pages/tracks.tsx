@@ -1,39 +1,49 @@
 import { useEffect, useState } from "react";
 import TrackCard from "../components/trackCard";
-import { fetchTracks } from "../scripts/APIscript";
-import { Link } from "react-router-dom";
-import Loading from "../components/loading";
 import NavTime from "../components/navTime";
 
-function Tracks({ accessToken, deviceId }) {
+function Tracks() {
   const [data, setData] = useState(undefined);
+  const deviceId = "";
 
   const handleClick = (index) => {
+    setData(undefined);
     getTracks(index);
   };
 
-  useEffect(() => {
-    getTracks(0);
-  }, [accessToken]);
+  const getTracks = async (index) => {
+    try {
+      // Fetching from the Express server instead of directly from Spotify
+      const res = await fetch(`/auth/tracks/${index}`);
 
-  async function getTracks(termIndex) {
-    if (accessToken) {
-      fetchTracks(accessToken, termIndex).then((data) => {
-        setData(data);
-      });
+      if (!res.ok) {
+        throw new Error("Failed to fetch profile");
+      }
+
+      const json = await res.json(); // Parse response as JSON
+      setData(json.tracks);
+    } catch (error) {
+      console.error(error);
     }
-  }
+  };
+
+  useEffect(() => {
+    getTracks(0); // Fetch artists with default time range on initial render
+  }, []);
 
   const TrackList = () => {
+    const itemsToRender =
+      data && data.items ? data.items : Array.from({ length: 50 });
     return (
       <div className="container">
         <div className="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-4 g-5 pb-5">
-          {data.items.map((track, index = 1) => (
+          {itemsToRender.map((item, index) => (
             <TrackCard
-              key={track.id}
-              token={accessToken}
+              isLoading={!data}
+              key={data ? item.id : index}
+              //token={accessToken}
               deviceId={deviceId}
-              track={track}
+              track={data ? item : null}
               index={index + 1}
             />
           ))}
@@ -44,16 +54,8 @@ function Tracks({ accessToken, deviceId }) {
 
   return (
     <>
-      {data ? (
-        <>
-          <NavTime handleClick={handleClick}></NavTime>
-          <TrackList />
-        </>
-      ) : (
-        <div className="position-absolute top-50 start-50 translate-middle">
-          <Loading />
-        </div>
-      )}
+      <NavTime handleClick={handleClick}></NavTime>
+      <TrackList />
     </>
   );
 }

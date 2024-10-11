@@ -1,30 +1,35 @@
 import { NavLink, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import {fetchProfile} from "../scripts/APIscript"
 
-export const Navbar = ({accessToken}) => {
-
+export const Navbar = () => {
   const [profile, setProfile] = useState(null);
 
   useEffect(() => {
+    const getProfile = async () => {
+      try {
+        const res = await fetch("auth/profile");
 
-    async function getProfile() {
-      if(accessToken){
-        const profile = await fetchProfile(accessToken);
-        setProfile(profile);
+        if (!res.ok) {
+          throw new Error("Failed to fetch profile");
+        }
+
+        const json = await res.json(); // Parse response as JSON
+        setProfile(json.profileData); // Set the profile data
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+        setProfile(null); // Set profile to null if there's an error
       }
-    }
+    };
 
     getProfile();
+  }, []);
 
-  }, [accessToken]);
- 
   return (
-    <nav className="navbar navbar-expand-lg mx-5 pt-4 navbar-dark">
+    <nav className="navbar navbar-expand-lg mx-5 py-4 navbar-dark">
       <div className="container-fluid">
-        < NavLink className="navbar-brand" to="/">
+        <NavLink className="navbar-brand" to="/">
           Spotify Analytics <i className="bi bi-bar-chart accent"></i>
-        </ NavLink>
+        </NavLink>
         <button
           className="navbar-toggler"
           type="button"
@@ -39,19 +44,19 @@ export const Navbar = ({accessToken}) => {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              < NavLink className="nav-link" to="/artists">
+              <NavLink className="nav-link" to="/artists">
                 Top Artists
               </NavLink>
             </li>
             <li className="nav-item">
-              < NavLink className="nav-link" to="/tracks">
+              <NavLink className="nav-link" to="/tracks">
                 Top Tracks
-              </ NavLink>
+              </NavLink>
             </li>
             <li className="nav-item">
-              < NavLink className="nav-link" to="/recommendations">
-              Recommendations
-              </ NavLink>
+              <NavLink className="nav-link" to="/recommendations">
+                Recommendations
+              </NavLink>
             </li>
             <li className="nav-item dropdown">
               <Link
@@ -109,17 +114,17 @@ export const Navbar = ({accessToken}) => {
                     </Link>
                   </li>
                   <li>
-                    <a
-                      className="dropdown-item"
-                      href="/auth/logout"
-                    >
+                    <a className="dropdown-item" href="/auth/logout">
                       Logout
                     </a>
                   </li>
                 </ul>
               </div>
             ) : (
-              <a className="btn signIn text-light fw-bold rounded-pill" href="/auth/login">
+              <a
+                className="btn signIn text-light fw-bold rounded-pill"
+                href="/auth/login"
+              >
                 Sign in
               </a>
             )}

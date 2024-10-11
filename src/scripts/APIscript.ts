@@ -1,30 +1,3 @@
-export async function fetchProfile(code: string): Promise<UserProfile> {
-  const result = await fetch("https://api.spotify.com/v1/me", {
-    method: "GET",
-    headers: { Authorization: `Bearer ${code}` },
-  });
-
-  return await result.json();
-}
-
-export async function fetchArtists(
-  code: string,
-  termIndex: number
-): Promise<any> {
-  const terms = ["short_term", "medium_term", "long_term"];
-  const result = await fetch(
-    `https://api.spotify.com/v1/me/top/artists?time_range=${terms[termIndex]}&limit=50`,
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${code}`,
-      },
-    }
-  );
-
-  return await result.json();
-}
-
 export async function fetchTracks(
   code: string,
   termIndex: number
@@ -53,7 +26,7 @@ export async function fetchAvalibleGenres(code: string): Promise<any> {
   return await result.json();
 }
 
-export async function recommendationSeeds(code: string) {
+/*export async function recommendationSeeds(code: string) {
   const artists = await fetchArtists(code, 2);
   const artistIds = artists.items.slice(0, 2).map((artist: any) => artist.id);
   const seed_artists = artistIds.join(",");
@@ -97,7 +70,7 @@ export async function fetchRecommendations(
 ): Promise<any> {
   /*const seed_artists = (await recommendationSeeds(code)).seed_artists;
   const seed_genres = (await recommendationSeeds(code)).seed_genres;
-  const seed_track = (await recommendationSeeds(code)).seed_track;*/
+  const seed_track = (await recommendationSeeds(code)).seed_track;
   const result = await fetch(
     `https://api.spotify.com/v1/recommendations?seed_artists=${seed_artists}&limit=50`,
     {
@@ -107,7 +80,7 @@ export async function fetchRecommendations(
   );
 
   return await result.json();
-}
+}*/
 
 //https://api.spotify.com/v1/recommendations?seed_artists=${seed_artists}&seed_genres=${seed_genres}&seed_tracks=${seed_track}
 

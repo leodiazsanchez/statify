@@ -1,36 +1,44 @@
 import { useEffect, useRef, useState } from "react";
-import { fetchArtists } from "../scripts/APIscript";
 import NavTime from "../components/navTime";
 import Loading from "../components/loading";
 import { useParams } from "react-router-dom";
 import { Chart, ChartConfiguration } from "chart.js/auto";
-import { GenreCount, randomColors, sortDictByValue } from "../scripts/helperFunctions";
-import { Colors } from 'chart.js';
+import {
+  GenreCount,
+  randomColors,
+  sortDictByValue,
+} from "../scripts/helperFunctions";
+import { Colors } from "chart.js";
 
-function Charts({ accessToken }: { accessToken: string }) {
+function Charts() {
   const { page } = useParams<{ page: string }>();
   const [artists, setArtists] = useState<any[] | undefined>(undefined);
   const [labels, setLabels] = useState<string[]>([]);
   const [genreData, setGenreData] = useState<number[]>([]);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   Chart.register(Colors);
+  const accessToken = "";
 
-  const fetchAndProcessArtists = async (index: number) => {
+  /*const fetchAndProcessArtists = async (index: number) => {
     if (accessToken) {
       const res = await fetchArtists(accessToken, index);
       setArtists(res.items);
 
       const genres: string[] = res.items.flatMap((artist: any) =>
         artist.genres.map((genre: string) =>
-          genre.split(' ')
+          genre
+            .split(" ")
             .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ')
+            .join(" ")
         )
       );
-      const genreCount: GenreCount = genres.reduce((count: GenreCount, genre: string) => {
-        count[genre] = (count[genre] || 0) + 1;
-        return count;
-      }, {});
+      const genreCount: GenreCount = genres.reduce(
+        (count: GenreCount, genre: string) => {
+          count[genre] = (count[genre] || 0) + 1;
+          return count;
+        },
+        {}
+      );
 
       const sortedGenres = sortDictByValue(genreCount);
       setLabels(Object.keys(sortedGenres));
@@ -85,16 +93,15 @@ function Charts({ accessToken }: { accessToken: string }) {
             },
           },
         };
-  
+
         const chartInstance = new Chart(ctx, chartConfig);
-  
+
         return () => {
           chartInstance.destroy(); // Clean up on component unmount
         };
       }
     }
   }, [labels, genreData]);
-  
 
   const handleClick = (index: number) => {
     fetchAndProcessArtists(index);
@@ -103,12 +110,16 @@ function Charts({ accessToken }: { accessToken: string }) {
   return (
     <>
       {artists ? (
-        <>        
+        <>
           <h2 className="text-center text-capitalize mt-3">{"Top " + page}</h2>
           <NavTime handleClick={handleClick} />
           <div className="d-flex justify-content-center">
             <div style={{ width: "400px" }}>
-              <canvas ref={canvasRef} id="genreChart" className="text-capitalize"/>
+              <canvas
+                ref={canvasRef}
+                id="genreChart"
+                className="text-capitalize"
+              />
             </div>
           </div>
         </>
@@ -118,7 +129,7 @@ function Charts({ accessToken }: { accessToken: string }) {
         </div>
       )}
     </>
-  );
+  );*/
 }
 
 export default Charts;
