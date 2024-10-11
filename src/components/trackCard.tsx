@@ -19,7 +19,7 @@ const TrackCard = ({ deviceId, track, index, isLoading }) => {
               alt={track.name}
             />
             <div className="card-img-overlay">
-              <div className="text-container">
+              <div className="d-flex">
                 <div className="details-container">
                   <h4 className="m-0 mb-1 shorten-text">{track.name}</h4>
                   <h5 className="m-0 shorten-text">
