@@ -1,8 +1,8 @@
-import { Link } from "react-router-dom";
-import { playTrack } from "../scripts/APIscript";
 import SkeletonCard from "./skeletonCard";
+import { useDevice } from "../providers/deviceProvider";
 
-const TrackCard = ({ deviceId, track, index, isLoading }) => {
+const TrackCard = ({ track, index, isLoading }) => {
+  const { deviceId } = useDevice();
   return (
     <>
       {isLoading ? (
@@ -11,7 +11,19 @@ const TrackCard = ({ deviceId, track, index, isLoading }) => {
         <div>
           <div
             className="card h-100 bg-transparent shadow text-white artist zoom"
-            //onClick={() => playTrack(token, track.uri, deviceId)}
+            onClick={async () => {
+              try {
+                const res = await fetch(`/auth/play/${track.uri}/${deviceId}`, {
+                  method: "PUT",
+                });
+
+                if (!res.ok) {
+                  throw new Error(res.status.toString());
+                }
+              } catch (error) {
+                console.error(error);
+              }
+            }}
           >
             <img
               className="card-img darken artist-img"

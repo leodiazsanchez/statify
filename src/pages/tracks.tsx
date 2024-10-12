@@ -41,8 +41,6 @@ function Tracks() {
             <TrackCard
               isLoading={!data}
               key={data ? item.id : index}
-              //token={accessToken}
-              deviceId={deviceId}
               track={data ? item : null}
               index={index + 1}
             />

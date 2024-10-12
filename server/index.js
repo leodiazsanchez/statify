@@ -1,7 +1,6 @@
 const express = require("express");
 const request = require("request");
 const dotenv = require("dotenv");
-const { access } = require("fs");
 
 const port = 5000;
 
@@ -28,7 +27,7 @@ var generateRandomString = function (length) {
 
 var app = express();
 
-app.get("/login", (req, res) => {
+app.get("/login", (_, res) => {
   var scope =
     "streaming user-read-private user-read-email user-top-read user-read-playback-state user-modify-playback-state playlist-read-private playlist-modify-public playlist-modify-private";
   var state = generateRandomString(16);
@@ -47,7 +46,7 @@ app.get("/login", (req, res) => {
   );
 });
 
-app.get("/profile", async (req, res) => {
+app.get("/profile", async (_, res) => {
   const code = access_token;
 
   try {
@@ -122,7 +121,37 @@ app.get("/tracks/:termIndex", async (req, res) => {
   }
 });
 
-app.get("/logout", (req, res) => {
+async function playTrack(code, uri, deviceId) {
+  const data = {
+    uris: [uri],
+  };
+
+  await fetch(
+    `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
+    {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${code}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }
+  );
+}
+
+app.put("/play/:uri/:deviceId", async (req, res) => {
+  const { uri, deviceId } = req.params;
+
+  try {
+    await playTrack(access_token, uri, deviceId);
+    res.status(200).send("Track started playing");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error playing track");
+  }
+});
+
+app.get("/logout", (_, res) => {
   access_token = "";
   res.redirect("/");
 });
@@ -158,7 +187,7 @@ app.get("/callback", (req, res) => {
   });
 });
 
-app.get("/token", (req, res) => {
+app.get("/token", (_, res) => {
   res.json({ access_token: access_token });
 });
 

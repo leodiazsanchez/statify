@@ -6,11 +6,14 @@ import "./App.css";
 
 import Routes from "./routes/routes";
 import AuthProvider from "./providers/authProvider";
+import DeviceProvider from "./providers/deviceProvider";
 
 function App() {
   return (
     <AuthProvider>
-      <Routes />
+      <DeviceProvider>
+        <Routes />
+      </DeviceProvider>
     </AuthProvider>
   );
 }
