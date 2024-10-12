@@ -1,7 +1,7 @@
 const SkeletonCard = () => {
   return (
     <div>
-      <div className="card h-100 bg-transparent shadow text-white artist zoom square-card">
+      <div className="card h-100 bg-transparent shadow text-white artist square-card">
         <div className="card-img darken artist-img placeholder-glow w-100"></div>
         <div className="card-img-overlay">
           <div className="d-flex">

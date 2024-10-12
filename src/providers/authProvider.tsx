@@ -2,7 +2,6 @@ import axios from "axios";
 import {
   createContext,
   useContext,
-  useEffect,
   useLayoutEffect,
   useMemo,
   useState,
@@ -36,7 +35,6 @@ const AuthProvider = ({ children }) => {
       // Remove the Authorization header if no token
       delete axios.defaults.headers.common["Authorization"];
     }
-    console.log("Token set:", token);
   }, [token]);
 
   const contextValue = useMemo(
