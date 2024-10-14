@@ -1,8 +1,10 @@
 import { NavLink, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useAuth } from "../providers/authProvider";
 
 export const Navbar = () => {
   const [profile, setProfile] = useState(null);
+  const { token } = useAuth();
 
   useEffect(() => {
     const getProfile = async () => {
@@ -17,12 +19,14 @@ export const Navbar = () => {
         setProfile(json.profileData); // Set the profile data
       } catch (error) {
         console.error("Error fetching profile:", error);
-        setProfile(null); // Set profile to null if there's an error
+        setProfile(null);
       }
     };
 
-    getProfile();
-  }, []);
+    if (token) {
+      getProfile();
+    }
+  }, [token]);
 
   return (
     <nav className="navbar navbar-expand-lg mx-5 py-4 navbar-dark">
