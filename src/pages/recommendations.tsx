@@ -1,10 +1,4 @@
 import { useEffect, useState } from "react";
-import {
-  playTrack,
-  fetchPlaylists,
-  fetchPlaylist,
-  addTracks,
-} from "../scripts/APIscript";
 import Loading from "../components/loading";
 import RecommentationCard from "../components/recommenationCard";
 import TinderCard from "react-tinder-card";
@@ -15,80 +9,50 @@ const Recommendations = () => {
   const [playlists, setPlaylists] = useState(undefined);
   const [activePlaylist, setActivePlaylist] = useState(undefined);
   const [activePlaylistSeed, setActivePlaylistSeed] = useState(undefined);
-  const accessToken = "";
-  const deviceId = "";
 
   useEffect(() => {
-    setData();
-  }, [accessToken]);
+    const fetchData = async () => {
+      await fetchPlaylists();
+      await fetchTracks();
+    };
 
-  useEffect(() => {
-    if (tracks && playlists) {
-      playTrack(accessToken, tracks[0].uri, deviceId);
-    }
-  }, [tracks]);
+    fetchData();
+  }, []);
 
-  useEffect(() => {
-    if (activePlaylistSeed) {
-      fetchRecommendationsData();
-    }
-  }, [activePlaylistSeed]);
+  const fetchTracks = async () => {
+    try {
+      const res = await fetch(`/auth/recommendations`);
 
-  async function setData() {
-    if (accessToken) {
-      try {
-        const playlistData = await fetchPlaylists(accessToken);
-        setPlaylists(playlistData.items);
-        await handlePlaylist(playlistData.items[0]);
-      } catch (error) {
-        console.error("Error fetching data:", error);
+      if (!res.ok) {
+        throw new Error("Failed to fetch recommendations");
       }
+
+      const json = await res.json();
+      setTracks(json.recommenations);
+    } catch (error) {
+      console.error(error);
     }
-  }
+  };
 
   async function handlePlaylist(playlist) {
     setActivePlaylist(playlist);
-    const playlistSeed = await fetchPlaylist(accessToken, playlist.id);
-    setActivePlaylistSeed(playlistSeed);
-    setTracks(undefined);
+    fetchTracks();
   }
 
-  async function fetchRecommendationsData() {
+  async function fetchPlaylists() {
     try {
-      const recommendationsData = await fetchRecommendations(
-        accessToken,
-        artists_seed()
-      );
-      setTracks(recommendationsData.tracks);
+      
+      const res = await fetch(`/auth/playlists/${seed}`);
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch playlists");
+      }
+
+      const json = await res.json(); // Parse response as JSON
+      setPlaylists(json.playlists);
+      setActivePlaylist(json.playlists.items[0]);
     } catch (error) {
       console.error("Error fetching recommendations:", error);
-    }
-  }
-
-  function getRandomSample(arr, sampleSize) {
-    const result = new Set();
-    while (result.size < sampleSize) {
-      const randomIndex = Math.floor(Math.random() * arr.length);
-      result.add(arr[randomIndex]);
-    }
-    return Array.from(result);
-  }
-
-  function artists_seed() {
-    const artists = [];
-
-    try {
-      activePlaylistSeed.tracks.items.map((item) => {
-        item.track.artists.map((artist) => {
-          artists.push(artist.id);
-        });
-      });
-      const artistIds = getRandomSample(artists, 5).join(",");
-      console.log(artistIds);
-      return artistIds;
-    } catch (error) {
-      console.error("Error fetching or processing playlist:", error);
-      return "";
     }
   }
 
@@ -110,11 +74,6 @@ const Recommendations = () => {
     console.log(direction);
     if (direction === "right") {
       console.log(tracks[0].id);
-      await addTracks(
-        accessToken,
-        activePlaylist.id,
-        "spotify:track:" + tracks[0].id
-      );
     }
     remove();
   }
@@ -131,10 +90,9 @@ const Recommendations = () => {
                 <span className="fs-5 d-none d-sm-inline fw-bold">
                   <i className="bi bi-collection me-2"></i> Your Playlists
                 </span>
-
                 <div className="row row-cols-1 row-cols-sm-1 row-cols-md-4 row-cols-lg-4 row-cols-xl-4 row-cols-xxl-4 g-3 my-3">
                   {playlists &&
-                    playlists.map((playlist) => (
+                    playlists.items.map((playlist) => (
                       <div key={playlist.id}>
                         <div
                           onClick={() => handlePlaylist(playlist)}
@@ -184,12 +142,7 @@ const Recommendations = () => {
                         </TinderCard>
                       </>
                     ) : (
-                      <button
-                        className="btn btn-danger"
-                        onClick={() => fetchRecommendationsData()}
-                      >
-                        Load more
-                      </button>
+                      <button className="btn btn-danger">Load more</button>
                     )}
                   </div>
                 </div>
@@ -203,19 +156,7 @@ const Recommendations = () => {
     );
   };
 
-  return (
-    <div>
-      {playlists ? (
-        <>
-          <CardDeck></CardDeck>
-        </>
-      ) : (
-        <div className="position-absolute top-50 start-50 translate-middle">
-          <Loading />
-        </div>
-      )}
-    </div>
-  );
+  return <CardDeck></CardDeck>;
 };
 
 export default Recommendations;

@@ -1,6 +1,7 @@
 const express = require("express");
 const request = require("request");
 const dotenv = require("dotenv");
+const { access } = require("fs");
 
 const port = 5000;
 
@@ -14,6 +15,8 @@ var spotify_client_secret = "be7abe1d68da450a92e9bd87ce439146";
 
 var spotify_redirect_uri = "http://localhost:3000/auth/callback";
 
+var app = express();
+
 var generateRandomString = function (length) {
   var text = "";
   var possible =
@@ -24,8 +27,6 @@ var generateRandomString = function (length) {
   }
   return text;
 };
-
-var app = express();
 
 app.get("/login", (_, res) => {
   var scope =
@@ -87,7 +88,6 @@ app.get("/artists/:termIndex", async (req, res) => {
     );
 
     const artists = await response.json();
-    console.log(artists);
     res.json({ artists: artists });
   } catch (error) {
     res
@@ -139,6 +139,46 @@ async function playTrack(code, uri, deviceId) {
   );
 }
 
+async function artistSeed() {
+  const response = await fetch(
+    `https://api.spotify.com/v1/me/top/artists?time_range=medium_term&limit=50`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    }
+  );
+  const artists = await response.json();
+  const artistIds = artists.items.slice(0, 2).map((artist) => artist.id);
+  const seed_artists = artistIds.join(",");
+
+  return seed_artists;
+}
+
+app.get("/recommendations", async (req, res) => {
+  const { playlistId } = req.params;
+  try {
+    const seed_artists = await artistSeed(playlistId);
+    const response = await fetch(
+      `https://api.spotify.com/v1/recommendations?seed_artists=${seed_artists}&limit=50`,
+      {
+        method: "GET",
+        headers: { Authorization: `Bearer ${access_token}` },
+      }
+    );
+
+    const obj = await response.json();
+    const recommenations = obj.tracks;
+    console.log(recommenations)
+    res.json({ recommenations: recommenations });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Something went wrong", details: error.message });
+  }
+});
+
 app.put("/play/:uri/:deviceId", async (req, res) => {
   const { uri, deviceId } = req.params;
 
@@ -150,6 +190,46 @@ app.put("/play/:uri/:deviceId", async (req, res) => {
     res.status(500).send("Error playing track");
   }
 });
+
+app.get("/playlists", async (_, res) => {
+  try {
+    const response = await fetch(
+      `https://api.spotify.com/v1/me/playlists?limit=50&offset=0`,
+      {
+        method: "GET",
+        headers: { Authorization: `Bearer ${access_token}` },
+      }
+    );
+
+    const playlists = await response.json();
+    res.json({ playlists: playlists });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Something went wrong", details: error.message });
+  }
+});
+
+app.get("/playlist:playlistId"),
+  async (req, res) => {
+    const { playlistId } = req.params;
+
+    try {
+      const response = await fetch(
+        `https://api.spotify.com/v1/playlists/${playlistId}`,
+        {
+          method: "GET",
+          headers: { Authorization: `Bearer ${code}` },
+        }
+      );
+      const playlist = await response.json();
+      res.json({ playlists: playlist });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ error: "Something went wrong", details: error.message });
+    }
+  };
 
 app.get("/logout", (_, res) => {
   access_token = "";
