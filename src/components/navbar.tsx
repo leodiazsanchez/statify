@@ -58,41 +58,14 @@ export const Navbar = () => {
               </NavLink>
             </li>
             <li className="nav-item">
+              <NavLink className="nav-link" to="/genres">
+                Top Genres
+              </NavLink>
+            </li>
+            <li className="nav-item">
               <NavLink className="nav-link" to="/recommendations">
                 Recommendations
               </NavLink>
-            </li>
-            <li className="nav-item dropdown">
-              <Link
-                className="nav-link dropdown-toggle"
-                to="/"
-                id="navbarDropdown"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Charts
-              </Link>
-              <ul
-                className="dropdown-menu dropdown-menu-dark"
-                aria-labelledby="navbarDropdown"
-              >
-                <li>
-                  <Link className="dropdown-item" to="/charts/artists">
-                    Artists
-                  </Link>
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="/charts/tracks">
-                    Tracks
-                  </Link>
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="/charts/genres">
-                    Genres
-                  </Link>
-                </li>
-              </ul>
             </li>
           </ul>
           <div className="d-flex">

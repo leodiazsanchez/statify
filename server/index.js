@@ -112,7 +112,6 @@ app.get("/tracks/:termIndex", async (req, res) => {
     );
 
     const tracks = await response.json();
-    console.log(tracks);
     res.json({ tracks: tracks });
   } catch (error) {
     res
@@ -139,29 +138,50 @@ async function playTrack(code, uri, deviceId) {
   );
 }
 
-async function artistSeed() {
-  const response = await fetch(
-    `https://api.spotify.com/v1/me/top/artists?time_range=medium_term&limit=50`,
+app.post("/addTrack/:playlistId/:trackUris", async (req, _) =>{
+  const { playlistId, trackUris} = req.params
+  const data = {
+    uris: trackUris, 
+  };
+
+  await fetch(
+    `https://api.spotify.com/v1/playlists/${playlistId}/tracks?uris=${trackUris}`,
     {
-      method: "GET",
+      method: "POST",
       headers: {
         Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
       },
+      body: JSON.stringify(data),
     }
   );
-  const artists = await response.json();
-  const artistIds = artists.items.slice(0, 2).map((artist) => artist.id);
-  const seed_artists = artistIds.join(",");
+});
 
+async function artistSeed(playlistId) {
+  const response = await fetch(
+    `https://api.spotify.com/v1/playlists/${playlistId}`,
+    {
+      method: "GET",
+      headers: { Authorization: `Bearer ${access_token}` },
+    }
+  );
+  const json = await response.json();
+  const seed_artists = (json.tracks.items[0].track.artists[0].id)
+  /*const artists = await response.json().items;
+  const artistIds = artists.items.slice(0, 2).map((artist) => artist.id);
+  const seed_artists = artistIds.join(",");*/
   return seed_artists;
 }
 
-app.get("/recommendations", async (req, res) => {
+app.get("/recommendations/:playlistId", async (req, res) => {
   const { playlistId } = req.params;
   try {
-    const seed_artists = await artistSeed(playlistId);
+    console.log("playlist", playlistId)
+    const seedArtists = await artistSeed(playlistId);
+  
+    console.log("artists", seedArtists)
     const response = await fetch(
-      `https://api.spotify.com/v1/recommendations?seed_artists=${seed_artists}&limit=50`,
+      `https://api.spotify.com/v1/recommendations?seed_artists=${seedArtists}&limit=50`,
       {
         method: "GET",
         headers: { Authorization: `Bearer ${access_token}` },
@@ -170,9 +190,9 @@ app.get("/recommendations", async (req, res) => {
 
     const obj = await response.json();
     const recommenations = obj.tracks;
-    console.log(recommenations)
     res.json({ recommenations: recommenations });
   } catch (error) {
+    console.error(error)
     res
       .status(500)
       .json({ error: "Something went wrong", details: error.message });
@@ -262,7 +282,7 @@ app.get("/callback", (req, res) => {
       access_token = body.access_token;
       res.redirect("/");
     } else {
-      console.log("Invalid response while fetcing token!", response.statusText);
+      console.error("Invalid response while fetcing token!", response.statusText);
     }
   });
 });

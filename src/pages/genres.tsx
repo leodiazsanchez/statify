@@ -10,8 +10,7 @@ import {
 } from "../scripts/helperFunctions";
 import { Colors } from "chart.js";
 
-function Charts() {
-  const { page } = useParams<{ page: string }>();
+function Genres() {
   const [artists, setArtists] = useState<any[] | undefined>(undefined);
   const [labels, setLabels] = useState<string[]>([]);
   const [genreData, setGenreData] = useState<number[]>([]);
@@ -66,11 +65,11 @@ function Charts() {
         const chartConfig: ChartConfiguration = {
           type: "doughnut",
           data: {
-            labels: labels.slice(0, 3),
+            labels: labels.slice(0, 10),
             datasets: [
               {
                 label: "Genre Distribution",
-                data: genreData.slice(0, 3),
+                data: genreData.slice(0, 10),
                 hoverOffset: 4,
               },
             ],
@@ -120,7 +119,7 @@ function Charts() {
     <>
       {artists ? (
         <>
-          <h2 className="text-center text-capitalize mt-3">{"Top " + page}</h2>
+          <h2 className="text-center text-capitalize mt-3">{"Top Genres"}</h2>
           <NavTime handleClick={handleClick} />
           <div className="d-flex justify-content-center">
             <div style={{ width: "400px" }}>
@@ -141,4 +140,4 @@ function Charts() {
   );
 }
 
-export default Charts;
+export default Genres;
