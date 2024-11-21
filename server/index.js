@@ -2,123 +2,190 @@ const express = require("express");
 const request = require("request");
 const dotenv = require("dotenv");
 
-const port = 5000;
-
-access_token = "";
-refresh_token = "";
-
 dotenv.config();
 
-var spotify_client_id = "e5f9bfa9d40447488e4fc74d2c71d293";
-var spotify_client_secret = "be7abe1d68da450a92e9bd87ce439146";
+const app = express();
+const port = 5000;
 
-var spotify_redirect_uri = "http://localhost:3000/auth/callback";
+let accessToken = "";
+let refreshToken = "";
 
-var generateRandomString = function (length) {
-  var text = "";
-  var possible =
+const spotifyClientId = "e5f9bfa9d40447488e4fc74d2c71d293";
+const spotifyClientSecret = "be7abe1d68da450a92e9bd87ce439146";
+const spotifyRedirectUri = "http://localhost:3000/api/callback";
+
+const generateRandomString = (length) => {
+  const chars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-  for (var i = 0; i < length; i++) {
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-  }
-  return text;
+  return Array.from({ length }, () =>
+    chars.charAt(Math.floor(Math.random() * chars.length))
+  ).join("");
 };
 
-var app = express();
-
 app.get("/login", (_, res) => {
-  var scope =
+  const scope =
     "streaming user-read-private user-read-email user-top-read user-read-playback-state user-modify-playback-state playlist-read-private playlist-modify-public playlist-modify-private";
-  var state = generateRandomString(16);
+  const state = generateRandomString(16);
 
-  var auth_query_parameters = new URLSearchParams({
+  const authQueryParams = new URLSearchParams({
     response_type: "code",
-    client_id: spotify_client_id,
-    scope: scope,
-    redirect_uri: spotify_redirect_uri,
-    state: state,
+    client_id: spotifyClientId,
+    scope,
+    redirect_uri: spotifyRedirectUri,
+    state,
   });
 
   res.redirect(
-    "https://accounts.spotify.com/authorize/?" +
-      auth_query_parameters.toString()
+    `https://accounts.spotify.com/authorize/?${authQueryParams.toString()}`
   );
 });
 
-app.get("/profile", async (_, res) => {
-  const code = access_token;
+app.get("/callback", (req, res) => {
+  const code = req.query.code;
 
+  const authOptions = {
+    url: "https://accounts.spotify.com/api/token",
+    form: {
+      code,
+      redirect_uri: spotifyRedirectUri,
+      grant_type: "authorization_code",
+    },
+    headers: {
+      Authorization: `Basic ${Buffer.from(
+        `${spotifyClientId}:${spotifyClientSecret}`
+      ).toString("base64")}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    json: true,
+  };
+
+  request.post(authOptions, (error, response, body) => {
+    if (!error && response.statusCode === 200) {
+      accessToken = body.access_token;
+      res.redirect("/");
+    } else {
+      console.error("Error fetching token:", response?.statusText);
+      res.status(500).send("Authentication failed");
+    }
+  });
+});
+
+app.get("/token", (_, res) => res.json({ access_token: accessToken }));
+
+app.get("/refresh_token", (req, res) => {
+  const refresh_token = req.query.refresh_token;
+
+  const authOptions = {
+    url: "https://accounts.spotify.com/api/token",
+    headers: {
+      Authorization: `Basic ${Buffer.from(
+        `${spotifyClientId}:${spotifyClientSecret}`
+      ).toString("base64")}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    form: {
+      grant_type: "refresh_token",
+      refresh_token,
+    },
+    json: true,
+  };
+
+  request.post(authOptions, (error, response, body) => {
+    if (!error && response.statusCode === 200) {
+      accessToken = body.access_token;
+      refreshToken = body.refresh_token;
+      res.json({ access_token: accessToken, refresh_token: refreshToken });
+    } else {
+      console.error("Error refreshing token:", response?.statusText);
+      res.status(500).send("Failed to refresh token");
+    }
+  });
+});
+
+const fetchSpotifyData = async (url, res) => {
   try {
-    const response = await fetch("https://api.spotify.com/v1/me", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${code}`,
-      },
+    const response = await fetch(url, {
+      headers: { Authorization: `Bearer ${accessToken}` },
     });
 
     if (!response.ok) {
-      return res
-        .status(response.status)
-        .json({ error: "Failed to fetch profile" });
+      throw new Error(`Spotify API error: ${response.statusText}`);
     }
 
-    const profileData = await response.json();
-    return res.json({ profileData: profileData });
+    const data = await response.json();
+    res.json(data);
   } catch (error) {
-    console.error("Error fetching profile:", error);
-    return res.status(500).json({ error: "Internal Server Error" });
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
   }
+};
+
+app.get("/profile", (_, res) =>
+  fetchSpotifyData("https://api.spotify.com/v1/me", res)
+);
+
+app.get("/playlists", (_, res) =>
+  fetchSpotifyData("https://api.spotify.com/v1/me/playlists?limit=50", res)
+);
+
+app.get("/artists/:termIndex", (req, res) => {
+  const terms = ["short_term", "medium_term", "long_term"];
+  const term = terms[req.params.termIndex];
+  if (!term) return res.status(400).json({ error: "Invalid term index" });
+
+  fetchSpotifyData(
+    `https://api.spotify.com/v1/me/top/artists?time_range=${term}&limit=50`,
+    res
+  );
 });
 
-app.get("/artists/:termIndex", async (req, res) => {
-  const { termIndex } = req.params;
+app.get("/tracks/:termIndex", (req, res) => {
   const terms = ["short_term", "medium_term", "long_term"];
+  const term = terms[req.params.termIndex];
+  if (!term) return res.status(400).json({ error: "Invalid term index" });
+
+  fetchSpotifyData(
+    `https://api.spotify.com/v1/me/top/tracks?time_range=${term}&limit=50`,
+    res
+  );
+});
+
+app.get("/recommendations/:playlistId", async (req, res) => {
+  const { playlistId } = req.params;
 
   try {
-    const response = await fetch(
-      `https://api.spotify.com/v1/me/top/artists?time_range=${terms[termIndex]}&limit=50`,
+    const playlistResponse = await fetch(
+      `https://api.spotify.com/v1/playlists/${playlistId}`,
       {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
+        headers: { Authorization: `Bearer ${accessToken}` },
       }
     );
 
-    const artists = await response.json();
-    console.log(artists);
-    res.json({ artists: artists });
+    if (!playlistResponse.ok) throw new Error("Failed to fetch playlist");
+
+    const playlistData = await playlistResponse.json();
+    const seedArtistId = playlistData.tracks.items[0]?.track?.artists[0]?.id;
+
+    if (!seedArtistId)
+      return res.status(400).json({ error: "No seed artist found" });
+
+    fetchSpotifyData(
+      `https://api.spotify.com/v1/recommendations?seed_artists=${seedArtistId}&limit=50`,
+      res
+    );
   } catch (error) {
+    console.error(error);
     res
       .status(500)
-      .json({ error: "Something went wrong", details: error.message });
+      .json({ error: "Internal server error", details: error.message });
   }
 });
 
-app.get("/tracks/:termIndex", async (req, res) => {
-  const { termIndex } = req.params;
-  const terms = ["short_term", "medium_term", "long_term"];
-
-  try {
-    const response = await fetch(
-      `https://api.spotify.com/v1/me/top/tracks?time_range=${terms[termIndex]}&limit=50`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      }
-    );
-
-    const tracks = await response.json();
-    console.log(tracks);
-    res.json({ tracks: tracks });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Something went wrong", details: error.message });
-  }
+app.get("/logout", (_, res) => {
+  accessToken = "";
+  res.redirect("/");
 });
 
 async function playTrack(code, uri, deviceId) {
@@ -143,7 +210,7 @@ app.put("/play/:uri/:deviceId", async (req, res) => {
   const { uri, deviceId } = req.params;
 
   try {
-    await playTrack(access_token, uri, deviceId);
+    await playTrack(accessToken, uri, deviceId);
     res.status(200).send("Track started playing");
   } catch (error) {
     console.error(error);
@@ -151,75 +218,5 @@ app.put("/play/:uri/:deviceId", async (req, res) => {
   }
 });
 
-app.get("/logout", (_, res) => {
-  access_token = "";
-  res.redirect("/");
-});
-
-app.get("/callback", (req, res) => {
-  var code = req.query.code;
-
-  var authOptions = {
-    url: "https://accounts.spotify.com/api/token",
-    form: {
-      code: code,
-      redirect_uri: spotify_redirect_uri,
-      grant_type: "authorization_code",
-    },
-    headers: {
-      Authorization:
-        "Basic " +
-        Buffer.from(spotify_client_id + ":" + spotify_client_secret).toString(
-          "base64"
-        ),
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    json: true,
-  };
-
-  request.post(authOptions, function (error, response, body) {
-    if (!error && response.statusCode === 200) {
-      access_token = body.access_token;
-      res.redirect("/");
-    } else {
-      console.log("Invalid response while fetcing token!", response.statusText);
-    }
-  });
-});
-
-app.get("/token", (_, res) => {
-  res.json({ access_token: access_token });
-});
-
-app.get("/refresh_token", function (req, res) {
-  var refresh_token = req.query.refresh_token;
-  var authOptions = {
-    url: "https://accounts.spotify.com/api/token",
-    headers: {
-      "content-type": "application/x-www-form-urlencoded",
-      Authorization:
-        "Basic " +
-        new Buffer.from(client_id + ":" + client_secret).toString("base64"),
-    },
-    form: {
-      grant_type: "refresh_token",
-      refresh_token: refresh_token,
-    },
-    json: true,
-  };
-
-  request.post(authOptions, function (error, response, body) {
-    if (!error && response.statusCode === 200) {
-      var access_token = body.access_token,
-        refresh_token = body.refresh_token;
-      res.send({
-        access_token: access_token,
-        refresh_token: refresh_token,
-      });
-    }
-  });
-});
-
-app.listen(port, () => {
-  console.log(`Listening at http://localhost:${port}`);
-});
+// Start the Server
+app.listen(port, () => console.log(`Listening on http://localhost:${port}`));
