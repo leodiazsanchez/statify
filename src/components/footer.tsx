@@ -1,11 +1,17 @@
 import { Link } from "react-router-dom";
+import Logo from "../logo.png";
 function Footer() {
   return (
     <footer className="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top text-light mx-5 px-5">
       <div className="col-md-4 d-flex align-items-center">
         <a href="/" className="mb-3 me-2 mb-md-0 text-decoration-none lh-1">
           <span className="text-light">
-            Spotify Analytics <i className="bi bi-bar-chart accent"></i>
+            Statify{" "}
+            <img
+              src={Logo}
+              alt="logo"
+              style={{ width: "30px", height: "30px" }}
+            />
           </span>
         </a>
       </div>

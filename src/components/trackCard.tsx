@@ -13,7 +13,7 @@ const TrackCard = ({ track, index, isLoading }) => {
             className="card h-100 bg-transparent shadow text-white artist zoom"
             onClick={async () => {
               try {
-                const res = await fetch(`/auth/play/${track.uri}/${deviceId}`, {
+                const res = await fetch(`/api/play/${track.uri}/${deviceId}`, {
                   method: "PUT",
                 });
 

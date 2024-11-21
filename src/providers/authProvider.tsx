@@ -15,7 +15,7 @@ const AuthProvider = ({ children }) => {
   useLayoutEffect(() => {
     const fetchToken = async () => {
       try {
-        const response = await fetch("/auth/token");
+        const response = await fetch("/api/token");
         const json = await response.json();
         setToken(json.access_token);
       } catch (error) {

@@ -7,7 +7,7 @@ import {
   GenreCount,
   randomColors,
   sortDictByValue,
-} from "../scripts/helperFunctions";
+} from "../utils/helperFunctions";
 import { Colors } from "chart.js";
 
 function Genres() {
@@ -15,22 +15,25 @@ function Genres() {
   const [labels, setLabels] = useState<string[]>([]);
   const [genreData, setGenreData] = useState<number[]>([]);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    fetchAndProcessArtists(0);
+  }, []);
+
   Chart.register(Colors);
-  const accessToken = "";
 
   const fetchAndProcessArtists = async (index: number) => {
     try {
-      // Fetching from the Express server instead of directly from Spotify
-      const res = await fetch(`/auth/artists/${index}`);
+      const res = await fetch(`/api/artists/${index}`);
 
       if (!res.ok) {
         throw new Error("Failed to fetch profile");
       }
 
-      const json = await res.json(); // Parse response as JSON
-      setArtists(json.artists);
+      const json = await res.json();
+      setArtists(json);
 
-      const genres: string[] = json.artists.items.flatMap((artist: any) =>
+      const genres: string[] = json.items.flatMap((artist: any) =>
         artist.genres.map((genre: string) =>
           genre
             .split(" ")
@@ -55,10 +58,6 @@ function Genres() {
   };
 
   useEffect(() => {
-    fetchAndProcessArtists(0);
-  }, [accessToken]);
-
-  useEffect(() => {
     if (canvasRef.current) {
       const ctx = canvasRef.current.getContext("2d");
       if (ctx) {
@@ -78,7 +77,7 @@ function Genres() {
             plugins: {
               legend: {
                 labels: {
-                  color: "white", // Change legend label color
+                  color: "white",
                   font: {
                     size: 16,
                     family: "Arial",
@@ -94,7 +93,7 @@ function Genres() {
                 bodyFont: {
                   size: 14,
                 },
-                backgroundColor: "black", // Tooltip background color
+                backgroundColor: "black",
                 borderColor: "black",
                 borderWidth: 1,
               },
@@ -105,22 +104,22 @@ function Genres() {
         const chartInstance = new Chart(ctx, chartConfig);
 
         return () => {
-          chartInstance.destroy(); // Clean up on component unmount
+          chartInstance.destroy();
         };
       }
     }
   }, [labels, genreData]);
 
   const handleClick = (index: number) => {
+    setArtists(null);
     fetchAndProcessArtists(index);
   };
 
   return (
     <>
+      <NavTime handleClick={handleClick} />
       {artists ? (
         <>
-          <h2 className="text-center text-capitalize mt-3">{"Top Genres"}</h2>
-          <NavTime handleClick={handleClick} />
           <div className="d-flex justify-content-center">
             <div style={{ width: "400px" }}>
               <canvas

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import TrackCard from "../components/trackCard";
 import NavTime from "../components/navTime";
+import Footer from "../components/footer";
 
 function Tracks() {
   const [data, setData] = useState(undefined);
-  const deviceId = "";
 
   const handleClick = (index) => {
     setData(undefined);
@@ -13,15 +13,14 @@ function Tracks() {
 
   const getTracks = async (index) => {
     try {
-      // Fetching from the Express server instead of directly from Spotify
-      const res = await fetch(`/auth/tracks/${index}`);
+      const res = await fetch(`/api/tracks/${index}`);
 
       if (!res.ok) {
         throw new Error("Failed to fetch profile");
       }
 
       const json = await res.json(); // Parse response as JSON
-      setData(json.tracks);
+      setData(json);
     } catch (error) {
       console.error(error);
     }
