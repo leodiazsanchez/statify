@@ -1,11 +1,14 @@
-# Spotify Analytics 🎧📊
-Welcome to Spotify Analytics, your one-stop solution for in-depth analysis of your Spotify listening habits. This project leverages the Spotify API to provide detailed insights and visualizations of your music preferences, listening trends, and more!
+# Statify 🎧📊
+
+The Ultimate Music Experience, Tailored to Your Vibes
 
 ## Features ✨
 
-- **Top Tracks & Artists**: Discover your most-played songs and favorite artists.
-- **Listening History**: Visualize your listening history over different periods.
-- **Playlist Analysis**: Dive into the specifics of your playlists, including genre distribution and audio features.
-- **Personalized Recommendations**: Get tailored music recommendations based on your listening habits.
-- **Interactive Dashboards**: Explore your data through dynamic and interactive visualizations.
+- **Track Your Top Artists, Genres & Tracks**:  
+  See your top artists, genres, and tracks throughout the year. Statify makes it easy to keep track of your musical journey.
 
+- **Listen to Your Favorite Music**:  
+  Listen to your favorite tracks of the year by clicking any song in the Top Tracks section.
+
+- **Personalized Music Recommendations**:  
+  Based on your music preferences, Statify offers smart recommendations for new music that suits your vibe.
