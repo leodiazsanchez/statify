@@ -7,12 +7,15 @@ import "./styles/App.css";
 import Routes from "./routes/routes";
 import AuthProvider from "./providers/authProvider";
 import DeviceProvider from "./providers/deviceProvider";
+import { BrowserRouter } from "react-router-dom";
 
 function App() {
   return (
     <AuthProvider>
       <DeviceProvider>
-        <Routes />
+        <BrowserRouter>
+          <Routes />
+        </BrowserRouter>
       </DeviceProvider>
     </AuthProvider>
   );

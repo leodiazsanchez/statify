@@ -135,7 +135,7 @@ function Genres() {
         </>
       ) : (
         <div className="position-absolute top-50 start-50 translate-middle">
-          <Loading />
+          <Loading spinnerType="border" />
         </div>
       )}
     </>

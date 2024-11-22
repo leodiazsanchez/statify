@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap");
+
 :root {
   --primary-dark: #131213; /* Primary dark color */
   --primary-mid: #212222;
@@ -41,6 +43,11 @@ main {
 
 .signIn {
   background-color: var(--accent-dark);
+}
+
+.brand-font {
+  font-family: "Josefin Sans", sans-serif;
+  font-weight: 400;
 }
 
 .signIn:focus,
@@ -114,33 +121,16 @@ main {
   border-bottom-right-radius: 25px;
 }
 
-.recommendations {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 350px;
-  min-height: 600px;
-  overflow: hidden;
-  margin: auto;
-}
-
-.recommendations-wrapper {
-  position: relative;
-  width: 350px;
-  height: 350px;
-}
-
-.recommendation {
-  position: absolute;
-  width: 350px;
-  height: 350px;
-  cursor: pointer;
-  user-select: none;
-  object-fit: cover;
-}
-
 .square-card {
   aspect-ratio: 1 / 1;
+}
+
+.swipe-container {
+  width: 300px;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-40%, -50%);
 }
 
 .card {

@@ -7,7 +7,7 @@ function Home() {
       <header className="text-white text-center py-5">
         <div className="container">
           <h1 className="display-3">
-            Statify{" "}
+            <span className="brand-font">Statify </span>
             <img
               src={Logo}
               alt="logo"

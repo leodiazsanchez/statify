@@ -206,11 +206,38 @@ async function playTrack(code, uri, deviceId) {
   );
 }
 
+async function addTracks(playlistId, trackUris) {
+  const data = {
+    uris: [trackUris],
+  };
+
+  await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+}
+
 app.put("/play/:uri/:deviceId", async (req, res) => {
   const { uri, deviceId } = req.params;
 
   try {
     await playTrack(accessToken, uri, deviceId);
+    res.status(200).send("Track started playing");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error playing track");
+  }
+});
+
+app.post("/addTrack/:playlistId/:trackUris", async (req, res) => {
+  const { playlistId, trackUris } = req.params;
+
+  try {
+    await addTracks(playlistId, trackUris);
     res.status(200).send("Track started playing");
   } catch (error) {
     console.error(error);

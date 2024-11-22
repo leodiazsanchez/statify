@@ -18,13 +18,8 @@ const Recommendations = () => {
 
   useEffect(() => {
     if (activePlaylist) {
-      console.log(
-        "Active playlist changed, fetching recommended tracks:",
-        activePlaylist.id
-      );
+      setTracks([]);
       fetchRecommendedTracks(activePlaylist.id);
-    } else {
-      console.log("No active playlist set yet.");
     }
   }, [activePlaylist]);
 
@@ -52,10 +47,7 @@ const Recommendations = () => {
   };
 
   const removeTrack = () => {
-    setTracks((current) => {
-      setPrevTrack(current[0]);
-      return current.slice(1);
-    });
+    setTracks((prevTracks) => prevTracks.slice(1));
   };
 
   const restoreTrack = () => {
@@ -81,7 +73,7 @@ const Recommendations = () => {
 
   const PlaylistSelector = () => (
     <div className="playlists col-auto col-md-3 col-xl-3 py-3 px-2 rounded">
-      <div className="d-flex flex-column align-items-center px-3 pt-2 text-white">
+      <div className="d-flex flex-column px-3 pt-2 text-white">
         <span className="fs-5 fw-bold">
           <i className="bi bi-collection me-2"></i> Your Playlists
         </span>
@@ -108,18 +100,20 @@ const Recommendations = () => {
   );
 
   const TrackCards = () => (
-    <div className="recommendations">
-      {tracks.length > 1 ? (
-        tracks.slice(0, 2).map((track) => (
-          <TinderCard
-            className="swipe"
-            key={track.id}
-            onSwipe={handleSwipe}
-            onCardLeftScreen={() => {}}
-          >
-            <RecommendationCard track={track} />
-          </TinderCard>
-        ))
+    <div className="">
+      {tracks.length > 0 ? (
+        tracks
+          .slice(0, 2)
+          .reverse()
+          .map((track, index) => (
+            <TinderCard
+              className="swipe-container"
+              key={track.id}
+              onSwipe={(direction) => handleSwipe(direction)}
+            >
+              <RecommendationCard track={track} />
+            </TinderCard>
+          ))
       ) : (
         <button className="btn btn-danger">Load more</button>
       )}
@@ -127,14 +121,26 @@ const Recommendations = () => {
   );
 
   return (
-    <div className="container-fluid">
-      <div className="row flex-nowrap align-items-center">
-        <PlaylistSelector />
-        <div className="col py-3">
-          {tracks.length > 0 ? <TrackCards /> : <Loading />}
+    <>
+      {playlists.length > 0 ? (
+        <div className="container-fluid">
+          <div className="row flex-nowrap align-items-center">
+            <PlaylistSelector />
+            <div className="col py-3">
+              {tracks.length > 0 ? (
+                <TrackCards />
+              ) : (
+                <Loading spinnerType="grow" />
+              )}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      ) : (
+        <div className="position-absolute top-50 start-50 translate-middle">
+          <Loading spinnerType="border" />
+        </div>
+      )}
+    </>
   );
 };
 

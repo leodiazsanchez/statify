@@ -1,35 +1,44 @@
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { useRoutes } from "react-router-dom";
 import Home from "../pages/home";
 import NotFound from "../pages/notFound";
 import Artists from "../pages/artists";
 import Tracks from "../pages/tracks";
 import Recommendations from "../pages/recommendations";
-import Charts from "../pages/genres";
-import Layout from "../components/layout"; // Import the layout component
+import Layout from "../components/layout";
 import Genres from "../pages/genres";
+import PrivateRoute from "./privateRoute";
 
-const Routes = () => {
+const RoutesComponent = () => {
   const routes = [
     {
       path: "/",
-      element: <Layout />, // Wrap in Layout
+      element: <Layout />,
       children: [
         { path: "/", element: <Home /> },
         { path: "*", element: <NotFound /> },
-        { path: "/not-authorized", element: <p>No auth</p> },
-        { path: "artists", element: <Artists /> },
-        { path: "tracks", element: <Tracks /> },
-        { path: "recommendations", element: <Recommendations /> },
-        { path: "genres", element: <Genres /> },
+        {
+          path: "artists",
+          element: <PrivateRoute element={<Artists />} />, // Wrap in PrivateRoute
+        },
+        {
+          path: "tracks",
+          element: <PrivateRoute element={<Tracks />} />, // Wrap in PrivateRoute
+        },
+        {
+          path: "recommendations",
+          element: <PrivateRoute element={<Recommendations />} />, // Wrap in PrivateRoute
+        },
+        {
+          path: "genres",
+          element: <PrivateRoute element={<Genres />} />, // Wrap in PrivateRoute
+        },
       ],
     },
   ];
 
-  // Combine and conditionally include routes based on authentication status
-  const router = createBrowserRouter([...routes]);
+  const element = useRoutes(routes); // Use the routes configuration with useRoutes
 
-  // Provide the router configuration using RouterProvider
-  return <RouterProvider router={router} />;
+  return element; // This will render the matched route
 };
 
-export default Routes;
+export default RoutesComponent;
