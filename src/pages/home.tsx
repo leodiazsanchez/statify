@@ -17,7 +17,7 @@ function Home() {
           <p className="lead">
             The Ultimate Music Experience, Tailored to Your Vibes
           </p>
-          <div className="card h-100 w-50 m-auto">
+          <div className="card h-100 col-12 col-lg-5 m-auto">
             <div className="card-body bg-dark text-light">
               <h5 className="card-title">
                 Sign in with your Spotify Premium Account{" "}

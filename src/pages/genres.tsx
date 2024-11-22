@@ -15,6 +15,7 @@ function Genres() {
   const [labels, setLabels] = useState<string[]>([]);
   const [genreData, setGenreData] = useState<number[]>([]);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const numberOfGenres = 20;
 
   useEffect(() => {
     fetchAndProcessArtists(0);
@@ -62,13 +63,14 @@ function Genres() {
       const ctx = canvasRef.current.getContext("2d");
       if (ctx) {
         const chartConfig: ChartConfiguration = {
-          type: "doughnut",
+          type: "bar",
           data: {
-            labels: labels.slice(0, 10),
+            labels: labels.slice(0, numberOfGenres),
             datasets: [
               {
                 label: "Genre Distribution",
-                data: genreData.slice(0, 10),
+                data: genreData.slice(0, numberOfGenres),
+                backgroundColor: "rgba(29,185,84)",
                 hoverOffset: 4,
               },
             ],
@@ -84,6 +86,7 @@ function Genres() {
                     weight: "bold",
                   },
                 },
+                onClick: null, // Disable legend interaction
               },
               tooltip: {
                 titleFont: {
@@ -121,7 +124,7 @@ function Genres() {
       {artists ? (
         <>
           <div className="d-flex justify-content-center">
-            <div style={{ width: "400px" }}>
+            <div className="col-8 col-md-8 col-sm-12">
               <canvas
                 ref={canvasRef}
                 id="genreChart"
