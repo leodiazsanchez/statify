@@ -111,7 +111,7 @@ const Recommendations = () => {
     <div className="playlists col-xxl-3 col-lg-5 col-md-12 col-sm-12 px-2 rounded w-100">
       <div className="d-flex flex-column px-3 pt-2 text-white">
         <span className="fs-5 fw-bold">
-          <i className="bi bi-collection me-2"></i> Your Playlists
+          Playlists <i className="bi bi-collection-play"></i>
         </span>
         <div className="py-2">
           <PlayListsGrid></PlayListsGrid>
@@ -166,7 +166,7 @@ const Recommendations = () => {
             className="offcanvas-title text-light"
             id="offcanvasScrollingLabel"
           >
-            <i className="bi bi-collection me-2"></i> Your Playlists
+            Playlists <i className="bi bi-collection-play"></i>
           </h5>
           <button
             type="button"
