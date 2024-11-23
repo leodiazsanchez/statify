@@ -10,20 +10,33 @@ function Genres() {
   const [artists, setArtists] = useState<any[] | undefined>(undefined);
   const [labels, setLabels] = useState<string[]>([]);
   const [genreData, setGenreData] = useState<number[]>([]);
+  const [indexAxis, setIndexAxis] = useState<"x" | "y">("x"); // Control bar orientation
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const numberOfGenres = 20;
   const apiClient = useAxiosWithAuth();
 
+  Chart.register(Colors);
+
   useEffect(() => {
     fetchAndProcessArtists(0);
+    updateChartOrientation();
+
+    // Update orientation on window resize
+    window.addEventListener("resize", updateChartOrientation);
+
+    return () => {
+      window.removeEventListener("resize", updateChartOrientation);
+    };
   }, []);
 
-  Chart.register(Colors);
+  const updateChartOrientation = () => {
+    const isMobile = window.innerWidth < 1024;
+    setIndexAxis(isMobile ? "y" : "x");
+  };
 
   const fetchAndProcessArtists = async (index: number) => {
     try {
       const res = await apiClient.get(`/api/artists/${index}`);
-
       if (res.status !== 200) {
         throw new Error("Failed to fetch profile");
       }
@@ -60,7 +73,7 @@ function Genres() {
       const ctx = canvasRef.current.getContext("2d");
       if (ctx) {
         const chartConfig: ChartConfiguration = {
-          type: "bar",
+          type: "bar", // Always use 'bar'
           data: {
             labels: labels.slice(0, numberOfGenres),
             datasets: [
@@ -73,6 +86,9 @@ function Genres() {
             ],
           },
           options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis,
             plugins: {
               legend: {
                 labels: {
@@ -108,7 +124,7 @@ function Genres() {
         };
       }
     }
-  }, [labels, genreData]);
+  }, [labels, genreData, indexAxis]);
 
   const handleClick = (index: number) => {
     setArtists(null);
@@ -119,19 +135,15 @@ function Genres() {
     <>
       <NavTime handleClick={handleClick} />
       {artists ? (
-        <>
-          <div className="d-flex justify-content-center">
-            <div className="col-8 col-md-8 col-sm-12">
-              <canvas
-                ref={canvasRef}
-                id="genreChart"
-                className="text-capitalize"
-              />
-            </div>
-          </div>
-        </>
+        <div className="col col-lg-10 calc-height-genres position-relative m-auto">
+          <canvas
+            ref={canvasRef}
+            id="genreChart"
+            className="text-capitalize d-block w-100 h-100"
+          />
+        </div>
       ) : (
-        <div className="position-absolute top-50 start-50 translate-middle">
+        <div className="d-flex justify-content-center align-items-center h-100">
           <Loading spinnerType="border" />
         </div>
       )}

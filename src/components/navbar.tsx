@@ -5,7 +5,7 @@ import Logo from "../logo.png";
 import { useAxiosWithAuth } from "../utils/useAxiosWithAuth";
 
 const NavbarContent = ({ profile, loading }) => (
-  <nav className="navbar navbar-expand-lg mx-5 py-4 navbar-dark">
+  <nav className="navbar navbar-expand-lg mx-2 mx-lg-5 py-4 navbar-dark">
     <div className="container-fluid">
       <NavLink className="navbar-brand" to="/">
         <span className="brand-font">Statify </span>
