@@ -150,11 +150,9 @@ main {
 }
 
 .swipe-container {
-  width: 300px;
   position: absolute;
-  top: 40%;
-  left: 50%;
-  transform: translate(-40%, -50%);
+  width: 50%;
+  max-width: 300px;
 }
 
 .card {
