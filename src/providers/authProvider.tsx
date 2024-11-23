@@ -27,16 +27,6 @@ const AuthProvider = ({ children }) => {
     fetchToken();
   }, []);
 
-  useLayoutEffect(() => {
-    if (token) {
-      // Set the token in axios headers
-      axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-    } else {
-      // Remove the Authorization header if no token
-      delete axios.defaults.headers.common["Authorization"];
-    }
-  }, [token]);
-
   const contextValue = useMemo(
     () => ({
       token,

@@ -9,7 +9,7 @@ const Layout = () => {
   return (
     <>
       <Navbar />
-      <main className={`py-5 px-5 pb-5`}>
+      <main className={`px-5`}>
         <Outlet />
       </main>
       {token ? <WebPlayback token={token}></WebPlayback> : <></>}

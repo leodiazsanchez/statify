@@ -7,12 +7,11 @@ dotenv.config();
 const app = express();
 const port = 5000;
 
-let accessToken = "";
-let refreshToken = "";
-
 const spotifyClientId = "e5f9bfa9d40447488e4fc74d2c71d293";
 const spotifyClientSecret = "be7abe1d68da450a92e9bd87ce439146";
 const spotifyRedirectUri = "http://localhost:3000/api/callback";
+
+let accessToken = "";
 
 const generateRandomString = (length) => {
   const chars =
@@ -102,10 +101,10 @@ app.get("/refresh_token", (req, res) => {
   });
 });
 
-const fetchSpotifyData = async (url, res) => {
+const fetchSpotifyData = async (url, req, res) => {
   try {
     const response = await fetch(url, {
-      headers: { Authorization: `Bearer ${accessToken}` },
+      headers: { Authorization: `${req.headers.authorization}` },
     });
 
     if (!response.ok) {
@@ -122,12 +121,12 @@ const fetchSpotifyData = async (url, res) => {
   }
 };
 
-app.get("/profile", (_, res) =>
-  fetchSpotifyData("https://api.spotify.com/v1/me", res)
+app.get("/profile", (req, res) =>
+  fetchSpotifyData("https://api.spotify.com/v1/me", req, res)
 );
 
-app.get("/playlists", (_, res) =>
-  fetchSpotifyData("https://api.spotify.com/v1/me/playlists?limit=50", res)
+app.get("/playlists", (req, res) =>
+  fetchSpotifyData("https://api.spotify.com/v1/me/playlists?limit=50", req, res)
 );
 
 app.get("/artists/:termIndex", (req, res) => {
@@ -137,6 +136,7 @@ app.get("/artists/:termIndex", (req, res) => {
 
   fetchSpotifyData(
     `https://api.spotify.com/v1/me/top/artists?time_range=${term}&limit=50`,
+    req,
     res
   );
 });
@@ -148,6 +148,7 @@ app.get("/tracks/:termIndex", (req, res) => {
 
   fetchSpotifyData(
     `https://api.spotify.com/v1/me/top/tracks?time_range=${term}&limit=50`,
+    req,
     res
   );
 });
@@ -159,7 +160,7 @@ app.get("/recommendations/:playlistId", async (req, res) => {
     const playlistResponse = await fetch(
       `https://api.spotify.com/v1/playlists/${playlistId}`,
       {
-        headers: { Authorization: `Bearer ${accessToken}` },
+        headers: { Authorization: `${req.headers.authorization}` },
       }
     );
 
@@ -173,6 +174,7 @@ app.get("/recommendations/:playlistId", async (req, res) => {
 
     fetchSpotifyData(
       `https://api.spotify.com/v1/recommendations?seed_artists=${seedArtistId}&limit=50`,
+      req,
       res
     );
   } catch (error) {

@@ -124,7 +124,7 @@ function WebPlayback(props) {
     return <></>;
   } else if (current_track) {
     return (
-      <div className="player fixed-bottom rounded">
+      <div className="player fixed-bottom rounded col-8 col-md-6 col-lg-4 col-xl-3 col-xxl-2">
         <div className="main-wrapper d-flex align-items-center justify-content-between gap-3">
           <div className="now-playing d-flex align-items-center flex-grow-1">
             <img

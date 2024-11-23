@@ -18,27 +18,27 @@ const RoutesComponent = () => {
         { path: "*", element: <NotFound /> },
         {
           path: "artists",
-          element: <PrivateRoute element={<Artists />} />, // Wrap in PrivateRoute
+          element: <PrivateRoute element={<Artists />} />, 
         },
         {
           path: "tracks",
-          element: <PrivateRoute element={<Tracks />} />, // Wrap in PrivateRoute
+          element: <PrivateRoute element={<Tracks />} />, 
         },
         {
           path: "recommendations",
-          element: <PrivateRoute element={<Recommendations />} />, // Wrap in PrivateRoute
+          element: <PrivateRoute element={<Recommendations />} />, 
         },
         {
           path: "genres",
-          element: <PrivateRoute element={<Genres />} />, // Wrap in PrivateRoute
+          element: <PrivateRoute element={<Genres />} />, 
         },
       ],
     },
   ];
 
-  const element = useRoutes(routes); // Use the routes configuration with useRoutes
+  const element = useRoutes(routes);
 
-  return element; // This will render the matched route
+  return element; 
 };
 
 export default RoutesComponent;

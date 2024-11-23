@@ -15,7 +15,7 @@ function Home() {
             />
           </h1>
           <p className="lead">
-            The Ultimate Music Experience, Tailored to Your Vibes
+            Explore and Visualize Your Spotify Data with Ease
           </p>
           <div className="card h-100 col-12 col-lg-5 m-auto">
             <div className="card-body bg-dark text-light">

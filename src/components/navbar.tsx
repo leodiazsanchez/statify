@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useAuth } from "../providers/authProvider";
 import Logo from "../logo.png";
+import { useAxiosWithAuth } from "../utils/useAxiosWithAuth";
 
 const NavbarContent = ({ profile, loading }) => (
   <nav className="navbar navbar-expand-lg mx-5 py-4 navbar-dark">
@@ -90,16 +91,16 @@ export const Navbar = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const { token } = useAuth();
+  const apiClient = useAxiosWithAuth();
 
   useEffect(() => {
     const init = async () => {
       if (token) {
         setLoading(true);
         try {
-          const res = await fetch("api/profile");
-          if (!res.ok) throw new Error("Failed to fetch profile");
-          const json = await res.json();
-          setProfile(json);
+          const res = await apiClient.get("api/profile");
+          if (res.status !== 200) throw new Error("Failed to fetch profile");
+          setProfile(res.data);
         } catch (error) {
           console.error("Error fetching profile:", error);
           setProfile(null);

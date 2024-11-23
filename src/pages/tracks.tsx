@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import TrackCard from "../components/trackCard";
 import NavTime from "../components/navTime";
-import Footer from "../components/footer";
+import { useAxiosWithAuth } from "../utils/useAxiosWithAuth";
 
 function Tracks() {
   const [data, setData] = useState(undefined);
+  const apiClient = useAxiosWithAuth();
 
   const handleClick = (index) => {
     setData(undefined);
@@ -13,13 +14,13 @@ function Tracks() {
 
   const getTracks = async (index) => {
     try {
-      const res = await fetch(`/api/tracks/${index}`);
+      const res = await apiClient.get(`/api/tracks/${index}`);
 
-      if (!res.ok) {
+      if (res.status !== 200) {
         throw new Error("Failed to fetch profile");
       }
 
-      const json = await res.json(); // Parse response as JSON
+      const json = await res.data; // Parse response as JSON
       setData(json);
     } catch (error) {
       console.error(error);

@@ -1,14 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import NavTime from "../components/navTime";
 import Loading from "../components/loading";
-import { useParams } from "react-router-dom";
 import { Chart, ChartConfiguration } from "chart.js/auto";
-import {
-  GenreCount,
-  randomColors,
-  sortDictByValue,
-} from "../utils/helperFunctions";
+import { GenreCount, sortDictByValue } from "../utils/helperFunctions";
 import { Colors } from "chart.js";
+import { useAxiosWithAuth } from "../utils/useAxiosWithAuth";
 
 function Genres() {
   const [artists, setArtists] = useState<any[] | undefined>(undefined);
@@ -16,6 +12,7 @@ function Genres() {
   const [genreData, setGenreData] = useState<number[]>([]);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const numberOfGenres = 20;
+  const apiClient = useAxiosWithAuth();
 
   useEffect(() => {
     fetchAndProcessArtists(0);
@@ -25,13 +22,13 @@ function Genres() {
 
   const fetchAndProcessArtists = async (index: number) => {
     try {
-      const res = await fetch(`/api/artists/${index}`);
+      const res = await apiClient.get(`/api/artists/${index}`);
 
-      if (!res.ok) {
+      if (res.status !== 200) {
         throw new Error("Failed to fetch profile");
       }
 
-      const json = await res.json();
+      const json = await res.data;
       setArtists(json);
 
       const genres: string[] = json.items.flatMap((artist: any) =>

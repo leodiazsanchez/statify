@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import ArtistCard from "../components/artistCard";
 import NavTime from "../components/navTime";
+import { useAxiosWithAuth } from "../utils/useAxiosWithAuth";
 
 function Artists() {
+  const apiClient = useAxiosWithAuth();
   const [artists, setArtists] = useState(undefined);
 
   const handleClick = (index) => {
@@ -12,17 +14,11 @@ function Artists() {
 
   const getArtists = async (index) => {
     try {
-      // Fetching from the Express server instead of directly from Spotify
-      const res = await fetch(`/api/artists/${index}`);
-
-      if (!res.ok) {
-        throw new Error("Failed to fetch profile");
-      }
-
-      const json = await res.json(); // Parse response as JSON
-      setArtists(json);
+      // Fetching from the Express server
+      const res = await apiClient.get(`/api/artists/${index}`);
+      setArtists(res.data);
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching artists:", error);
     }
   };
 
