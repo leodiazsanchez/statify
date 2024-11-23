@@ -19,10 +19,14 @@ const Recommendations = () => {
   }, []);
 
   useEffect(() => {
-    if (activePlaylist) {
-      setTracks([]);
-      fetchRecommendedTracks(activePlaylist.id);
-    }
+    const init = async () => {
+      if (activePlaylist) {
+        setTracks([]);
+        fetchRecommendedTracks(activePlaylist.id);
+      }
+    };
+
+    init();
   }, [activePlaylist]);
 
   const fetchPlaylists = async () => {
@@ -75,12 +79,12 @@ const Recommendations = () => {
   };
 
   const PlaylistSelector = () => (
-    <div className="playlists col-auto col-md-3 col-xl-3 py-3 px-2 rounded">
+    <div className="playlists col-xxl-3 col-lg-5 col-md-12 col-sm-12 py-3 px-2 rounded order-1">
       <div className="d-flex flex-column px-3 pt-2 text-white">
         <span className="fs-5 fw-bold">
           <i className="bi bi-collection me-2"></i> Your Playlists
         </span>
-        <div className="row row-cols-4 g-3 my-3">
+        <div className="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-4 g-3 my-2">
           {playlists.map((playlist) => (
             <div key={playlist.id}>
               <div
@@ -103,12 +107,12 @@ const Recommendations = () => {
   );
 
   const TrackCards = () => (
-    <div className="">
+    <>
       {tracks.length > 0 ? (
         tracks
           .slice(0, 2)
           .reverse()
-          .map((track, index) => (
+          .map((track) => (
             <TinderCard
               className="swipe-container"
               key={track.id}
@@ -120,22 +124,23 @@ const Recommendations = () => {
       ) : (
         <button className="btn btn-danger">Load more</button>
       )}
-    </div>
+    </>
   );
 
   return (
     <>
       {playlists.length > 0 ? (
-        <div className="container-fluid">
-          <div className="row flex-nowrap align-items-center">
-            <PlaylistSelector />
-            <div className="col py-3">
-              {tracks.length > 0 ? (
-                <TrackCards />
-              ) : (
-                <Loading spinnerType="grow" />
-              )}
-            </div>
+        <div className="d-flex flex-column flex-lg-row">
+          <PlaylistSelector></PlaylistSelector>
+          <div
+            className="col d-flex align-items-center justify-content-center order-0 order-lg-1"
+            style={{ minHeight: "500px" }}
+          >
+            {tracks.length > 0 ? (
+              <TrackCards></TrackCards>
+            ) : (
+              <Loading spinnerType="grow" />
+            )}
           </div>
         </div>
       ) : (
