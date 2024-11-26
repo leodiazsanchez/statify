@@ -3,18 +3,22 @@ import Loading from "../components/loading";
 import RecommendationCard from "../components/recommenationCard";
 import TinderCard from "react-tinder-card";
 import { useAxiosWithAuth } from "../utils/useAxiosWithAuth";
+import { useDevice } from "../providers/deviceProvider";
 
 const Recommendations = () => {
   const [tracks, setTracks] = useState([]);
   const [prevTrack, setPrevTrack] = useState(null);
   const [playlists, setPlaylists] = useState([]);
   const [activePlaylist, setActivePlaylist] = useState(null);
+  const [activeTrack, setActiveTrack] = useState(null);
+  const { deviceId } = useDevice();
   const apiClient = useAxiosWithAuth();
 
   useEffect(() => {
     const init = async () => {
       await fetchPlaylists();
     };
+
     init();
   }, []);
 
@@ -22,12 +26,22 @@ const Recommendations = () => {
     const init = async () => {
       if (activePlaylist) {
         setTracks([]);
-        fetchRecommendedTracks(activePlaylist.id);
+        await fetchRecommendedTracks(activePlaylist.id);
       }
     };
 
     init();
   }, [activePlaylist]);
+
+  useEffect(() => {
+    const init = async () => {
+      if (activeTrack) {
+        await playTrack();
+      }
+    };
+
+    init();
+  }, [activeTrack]);
 
   const fetchPlaylists = async () => {
     try {
@@ -41,6 +55,14 @@ const Recommendations = () => {
     }
   };
 
+  const playTrack = async () => {
+    try {
+      await apiClient.put(`/api/play/${activeTrack.uri}/${deviceId}`);
+    } catch (error) {
+      console.error("Error fetching playlists:", error);
+    }
+  };
+
   const fetchRecommendedTracks = async (playlistId) => {
     try {
       const res = await apiClient.get(`/api/recommendations/${playlistId}`);
@@ -48,13 +70,18 @@ const Recommendations = () => {
         throw new Error("Failed to fetch recommendations");
       const data = await res.data;
       setTracks(data.tracks);
+      setActiveTrack(data.tracks[0]);
     } catch (error) {
       console.error("Error fetching recommendations:", error);
     }
   };
 
   const removeTrack = () => {
-    setTracks((prevTracks) => prevTracks.slice(1));
+    setTracks((prevTracks) => {
+      const updatedTracks = prevTracks.slice(1);
+      setActiveTrack(updatedTracks[0]);
+      return updatedTracks;
+    });
   };
 
   const restoreTrack = () => {
@@ -189,7 +216,7 @@ const Recommendations = () => {
           <div className="playlists col-xxl-4 col-lg-5 col-md-12 col-sm-12 py-3 px-2 rounded order-1 d-none d-lg-block">
             <PlaylistSelector></PlaylistSelector>
           </div>
-          <div className="d-lg-none order-1">
+          <div className="d-lg-none order-1"> 
             <OffCanvas></OffCanvas>
           </div>
 

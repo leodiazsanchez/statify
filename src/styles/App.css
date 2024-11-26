@@ -25,7 +25,7 @@ main {
 }
 
 .calc-height-recommendations {
-  height: calc(100% - 80px);
+  height: calc(100% - 160px);
 }
 
 .calc-height-genres {
