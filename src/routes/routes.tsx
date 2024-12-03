@@ -18,19 +18,19 @@ const RoutesComponent = () => {
         { path: "*", element: <NotFound /> },
         {
           path: "artists",
-          element: <PrivateRoute element={<Artists />} />, 
+          element: <PrivateRoute element={<Artists />} />,
         },
         {
           path: "tracks",
-          element: <PrivateRoute element={<Tracks />} />, 
+          element: <PrivateRoute element={<Tracks />} />,
         },
         {
           path: "recommendations",
-          element: <PrivateRoute element={<Recommendations />} />, 
+          element: <PrivateRoute element={<Recommendations />} />,
         },
         {
           path: "genres",
-          element: <PrivateRoute element={<Genres />} />, 
+          element: <PrivateRoute element={<Genres />} />,
         },
       ],
     },
@@ -38,7 +38,7 @@ const RoutesComponent = () => {
 
   const element = useRoutes(routes);
 
-  return element; 
+  return element;
 };
 
 export default RoutesComponent;

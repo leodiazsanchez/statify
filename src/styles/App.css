@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap");
 
 :root {
-  --primary-dark: #131213; /* Primary dark color */
+  --primary-dark: #000000; /* Primary dark color */
   --primary-mid: #212222;
   --accent-dark: #137234; /* Accent color */
   --accent: #1db954; /* Accent color */
@@ -32,6 +32,11 @@ main {
   height: calc(100% - 112px);
 }
 
+.illustration {
+  height: 600px;
+  width: 600px;
+}
+
 .profilePic {
   inline-size: 24px;
   block-size: 24px;
@@ -60,6 +65,13 @@ main {
 .brand-font {
   font-family: "Josefin Sans", sans-serif;
   font-weight: 400;
+  background-image: linear-gradient(90deg, #137234 10%, #ff000000 100%),
+    linear-gradient(89deg, #ff000000 0%, #1db954 80%),
+    linear-gradient(90deg, #1cf536ff 100%, #fff 100%),
+    linear-gradient(0deg, #145a2cff 100%, #fff 100%);
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .signIn:focus,

@@ -48,7 +48,7 @@ const Recommendations = () => {
       const res = await apiClient.get(`/api/playlists`);
       if (res.status !== 200) throw new Error("Failed to fetch playlists");
       const data = await res.data;
-      setPlaylists(data.items || []);
+      setPlaylists(data.items);
       if (data.items.length > 0) setActivePlaylist(data.items[0]);
     } catch (error) {
       console.error("Error fetching playlists:", error);
@@ -105,34 +105,44 @@ const Recommendations = () => {
     removeTrack();
   };
 
-  const PlayListsGrid = () => (
-    <div className="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-3 row-cols-xl-4 g-3">
-      {playlists.map((playlist) => (
-        <div key={playlist.id}>
-          <div
-            className={`card h-100 bg-transparent shadow text-white ${
-              activePlaylist?.id === playlist.id ? "active-playlist" : ""
-            }`}
-            data-bs-dismiss="offcanvas"
-            aria-label="Close"
-            data-bs-target="#offcanvasBottom"
-            onClick={() => setActivePlaylist(playlist)}
-          >
-            <img
-              src={playlist.images[0]?.url}
-              alt={playlist.name}
-              className="card-img playlist-image w-100 h-100 darken-pl"
-            />
-            <div className="card-img-overlay p-1 justify-content-end">
-              <div>
-                <h5 className="playlist shorten-text-pl">{playlist.name}</h5>
+  const PlayListsGrid = () => {
+    if (!playlists || playlists.length === 0) {
+      return <p>No playlists available.</p>; // Fallback UI for empty playlists
+    }
+
+    return (
+      <div className="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-3 row-cols-xl-4 g-3">
+        {playlists
+          .filter((playlist) => playlist && playlist.id) // Filter out invalid entries
+          .map((playlist) => (
+            <div key={playlist.id}>
+              <div
+                className={`card h-100 bg-transparent shadow text-white ${
+                  activePlaylist?.id === playlist.id ? "active-playlist" : ""
+                }`}
+                data-bs-dismiss="offcanvas"
+                aria-label="Close"
+                data-bs-target="#offcanvasBottom"
+                onClick={() => setActivePlaylist(playlist)}
+              >
+                <img
+                  src={playlist.images[0]?.url || "default-image.jpg"} // Fallback image
+                  alt={playlist.name || "Unnamed Playlist"} // Fallback alt text
+                  className="card-img playlist-image w-100 h-100 darken-pl"
+                />
+                <div className="card-img-overlay p-1 justify-content-end">
+                  <div>
+                    <h5 className="playlist shorten-text-pl">
+                      {playlist.name || "Unnamed Playlist"}
+                    </h5>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
+          ))}
+      </div>
+    );
+  };
 
   const PlaylistSelector = () => (
     <div className="playlists col-xxl-3 col-lg-5 col-md-12 col-sm-12 px-2 rounded w-100">
@@ -216,7 +226,7 @@ const Recommendations = () => {
           <div className="playlists col-xxl-4 col-lg-5 col-md-12 col-sm-12 py-3 px-2 rounded order-1 d-none d-lg-block">
             <PlaylistSelector></PlaylistSelector>
           </div>
-          <div className="d-lg-none order-1"> 
+          <div className="d-lg-none order-1">
             <OffCanvas></OffCanvas>
           </div>
 

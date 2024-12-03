@@ -1,7 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useAuth } from "../providers/authProvider";
-import Logo from "../logo.png";
 import { useAxiosWithAuth } from "../utils/useAxiosWithAuth";
 
 const NavbarContent = ({ profile, loading }) => (
@@ -9,7 +8,6 @@ const NavbarContent = ({ profile, loading }) => (
     <div className="container-fluid">
       <NavLink className="navbar-brand" to="/">
         <span className="brand-font">Statify </span>
-        <img src={Logo} alt="logo" style={{ width: "40px", height: "40px" }} />
       </NavLink>
       <button
         className="navbar-toggler"
