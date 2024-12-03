@@ -1,6 +1,6 @@
 # Statify 🎧📊
 
-The Ultimate Music Experience, Tailored to Your Vibes
+A personal project that makes use of the Spotify Web API.
 
 ## Features ✨
 
@@ -11,4 +11,4 @@ The Ultimate Music Experience, Tailored to Your Vibes
   Listen to your favorite tracks of the year by clicking any song in the Top Tracks section.
 
 - **Personalized Music Recommendations**
-  Based on your music preferences, Statify offers smart recommendations for new music that suits your vibe.
+  Based on your playlists, Statify offers smart recommendations for new music that suits your vibe.
