@@ -12,3 +12,9 @@ A personal project that makes use of the Spotify Web API.
 
 - **Personalized Music Recommendations**
   Based on your playlists, Statify offers smart recommendations for new music that suits your vibe.
+
+## How to run locally
+```
+  npm install
+  npm run dev
+```
