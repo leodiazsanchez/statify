@@ -9,3 +9,4 @@ A personal project that makes use of the Spotify Web API.
 
 - **Listen to Your Favorite Music**
   Listen to your favorite tracks of the year by clicking any song in the Top Tracks section.
+
