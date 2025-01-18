@@ -7,8 +7,8 @@ dotenv.config();
 const app = express();
 const port = 5000;
 
-const spotifyClientId = "e5f9bfa9d40447488e4fc74d2c71d293";
-const spotifyClientSecret = "be7abe1d68da450a92e9bd87ce439146";
+const spotifyClientId = process.env.SPOTIFY_CLIENT_ID;
+const spotifyClientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 const spotifyRedirectUri = "http://localhost:3000/api/callback";
 
 let accessToken = "";
