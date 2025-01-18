@@ -66,7 +66,7 @@ function WebPlayback(props) {
         setDuration(state.duration);
 
         player.getCurrentState().then((state) => {
-          if (!state || state.paused) {
+          if (!state) {
             setActive(false);
           } else {
             setActive(true);
@@ -77,6 +77,7 @@ function WebPlayback(props) {
       player.connect();
     };
   }, [token]);
+
   useEffect(() => {
     const interval = setInterval(() => {
       if (!is_paused) {
@@ -128,8 +129,7 @@ function WebPlayback(props) {
 
   const handleEscape = () => {
     if (player) {
-      player.pause();
-      setPaused(true);
+      setActive(false);
     }
   };
 
@@ -181,9 +181,6 @@ function WebPlayback(props) {
                 ) : (
                   <i className="bi bi-pause-fill fs-3"></i>
                 )}
-              </button>
-              <button className="btn-spotify" onClick={handleEscape}>
-                <i className="bi bi-escape"></i>
               </button>
             </div>
           </div>
