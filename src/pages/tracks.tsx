@@ -20,7 +20,7 @@ function Tracks() {
         throw new Error("Failed to fetch profile");
       }
 
-      const json = await res.data; // Parse response as JSON
+      const json = await res.data; 
       setData(json);
     } catch (error) {
       console.error(error);
@@ -28,33 +28,31 @@ function Tracks() {
   };
 
   useEffect(() => {
-    getTracks(0); // Fetch artists with default time range on initial render
+    getTracks(0); 
   }, []);
 
   const TrackList = () => {
     const itemsToRender =
       data && data.items ? data.items : Array.from({ length: 50 });
     return (
-      <div className="container">
-        <div className="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-4 g-5 pb-5">
-          {itemsToRender.map((item, index) => (
-            <TrackCard
-              isLoading={!data}
-              key={data ? item.id : index}
-              track={data ? item : null}
-              index={index + 1}
-            />
-          ))}
-        </div>
+      <div className="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-4 g-5 pb-5">
+        {itemsToRender.map((item, index) => (
+          <TrackCard
+            isLoading={!data}
+            key={data ? item.id : index}
+            track={data ? item : null}
+            index={index + 1}
+          />
+        ))}
       </div>
     );
   };
 
   return (
-    <>
+    <div className="container">
       <NavTime handleClick={handleClick}></NavTime>
       <TrackList />
-    </>
+    </div>
   );
 }
 

@@ -10,7 +10,7 @@ function Genres() {
   const [artists, setArtists] = useState<any[] | undefined>(undefined);
   const [labels, setLabels] = useState<string[]>([]);
   const [genreData, setGenreData] = useState<number[]>([]);
-  const [indexAxis, setIndexAxis] = useState<"x" | "y">("x"); // Control bar orientation
+  const [indexAxis, setIndexAxis] = useState<"x" | "y">("x");
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const numberOfGenres = 20;
   const apiClient = useAxiosWithAuth();
@@ -21,9 +21,7 @@ function Genres() {
     fetchAndProcessArtists(0);
     updateChartOrientation();
 
-    // Update orientation on window resize
     window.addEventListener("resize", updateChartOrientation);
-
     return () => {
       window.removeEventListener("resize", updateChartOrientation);
     };
@@ -73,7 +71,7 @@ function Genres() {
       const ctx = canvasRef.current.getContext("2d");
       if (ctx) {
         const chartConfig: ChartConfiguration = {
-          type: "bar", // Always use 'bar'
+          type: "bar",
           data: {
             labels: labels.slice(0, numberOfGenres),
             datasets: [
@@ -99,7 +97,7 @@ function Genres() {
                     weight: "bold",
                   },
                 },
-                onClick: null, // Disable legend interaction
+                onClick: null,
               },
               tooltip: {
                 titleFont: {
@@ -132,22 +130,24 @@ function Genres() {
   };
 
   return (
-    <>
-      <NavTime handleClick={handleClick} />
-      {artists ? (
-        <div className="col col-lg-10 calc-height-genres position-relative m-auto">
-          <canvas
-            ref={canvasRef}
-            id="genreChart"
-            className="text-capitalize d-block w-100 h-100"
-          />
-        </div>
-      ) : (
-        <div className="d-flex justify-content-center align-items-center h-100">
-          <Loading spinnerType="border" />
-        </div>
-      )}
-    </>
+    <div className="container">
+      <div className="align-container">
+        <NavTime handleClick={handleClick} />
+        {artists ? (
+          <div className="chart-container">
+            <canvas
+              ref={canvasRef}
+              id="genreChart"
+              className="text-capitalize"
+            />
+          </div>
+        ) : (
+          <div className="loading-container">
+            <Loading spinnerType="border" />
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 

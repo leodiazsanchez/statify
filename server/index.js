@@ -164,15 +164,17 @@ app.get("/recommendations/:playlistId", async (req, res) => {
       }
     );
 
-    if (!playlistResponse.ok) throw new Error("Failed to fetch playlist");
+    if (!playlistResponse.ok) {
+      throw new Error("Failed to fetch playlist");
+    }
 
     const playlistData = await playlistResponse.json();
     const seedArtistId = playlistData.tracks.items[0]?.track?.artists[0]?.id;
-
+    console.log(seedArtistId);
     if (!seedArtistId)
       return res.status(400).json({ error: "No seed artist found" });
 
-    fetchSpotifyData(
+    await fetchSpotifyData(
       `https://api.spotify.com/v1/recommendations?seed_artists=${seedArtistId}&limit=50`,
       req,
       res

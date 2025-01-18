@@ -1,84 +1,57 @@
-import Footer from "../components/footer";
-import Logo from "../logo.png";
+import { ReactComponent as ArtistIcon } from "../svgs/artist.svg";
+import { ReactComponent as TracksIcon } from "../svgs/tracks.svg";
+import { ReactComponent as GenreIcon } from "../svgs/genres.svg";
 
 function Home() {
   return (
-    <>
-      <header className="text-white text-center py-5">
-        <div className="container">
-          <h1 className="display-3">
-            <span className="brand-font">Statify </span>
-            <img
-              src={Logo}
-              alt="logo"
-              style={{ width: "80px", height: "80px" }}
-            />
-          </h1>
-          <p className="lead">
-            Explore and Visualize Your Spotify Data with Ease
-          </p>
-          <div className="card h-100 col-12 col-lg-5 m-auto">
-            <div className="card-body bg-dark text-light">
-              <h5 className="card-title">
-                Sign in with your Spotify Premium Account{" "}
-                <i className="bi bi-spotify text-accent"></i>
+    <div className="container-fuild mt-md-5">
+      <div className="row">
+        <div className="col-12">
+          <div>
+            <h1 className="mb-4 text-center text-accent">
+              Dive Into Your Spotify Music Insights
+            </h1>
+            <hr className="w-50 mx-auto"></hr>
+            <p className="lead text-center">
+              Learn more about your favorite artists, tracks, and genres, all in
+              one place.
+            </p>
+          </div>
+        </div>
+        <div className="col-12 my-5">
+          <div className="row py-4">
+            <div className="col-12 col-xl-4 text-center">
+              <ArtistIcon className="icon mb-3" />
+              <h5 className="fw-bold text-accent">
+                Follow the Artists You Love
               </h5>
-              <p className="card-text">
-                Access music statistics and recommendations, crafted just for
-                you.
+              <p className="text-secondary">
+                Explore a personalized ranking of your most-loved artists. See
+                who's at the top of your list and dive into their Spotify page
+                with a single click.
+              </p>
+            </div>
+            <div className="col-12 col-xl-4 text-center">
+              <TracksIcon className="icon mb-3" />
+              <h5 className="fw-bold text-accent">Listen to Your Top Tracks</h5>
+              <p className="text-secondary">
+                Revisit the memories connected to your favorite songs and let
+                the music transport you back. Simply click and enjoy them
+                directly in your browser.
+              </p>
+            </div>
+            <div className="col-12 col-xl-4 text-center">
+              <GenreIcon className="icon mb-3" />
+              <h5 className="text-accent">Visualize Your Genre Distribution</h5>
+              <p className="text-secondary">
+                Gain a deeper understanding of how your favorite styles stack up
+                with detailed visualization of your genre distribution.
               </p>
             </div>
           </div>
         </div>
-      </header>
-
-      <section className="container my-5">
-        <div className="row">
-          <div className="col-md-4 mb-4">
-            <div className="card h-100">
-              <div className="card-body bg-dark text-light">
-                <h5 className="card-title">
-                  Track Your Top Artists, Genres & Tracks{" "}
-                  <i className="bi bi-stars mb-3 text-warning"></i>
-                </h5>
-                <p className="card-text">
-                  See your top artists, genres, and tracks throughout the year.
-                  Statify makes it easy to keep track of your musical journey.
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-4 mb-4">
-            <div className="card h-100">
-              <div className="card-body bg-dark text-light">
-                <h5 className="card-title">
-                  Listen to Your Favorite Music{" "}
-                  <i className="bi bi-earbuds mb-3 text-light"></i>
-                </h5>
-                <p className="card-text">
-                  Listen to your favorite tracks of the year on Statify by
-                  clicking any song in the Top Tracks section.
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-4 mb-4">
-            <div className="card h-100">
-              <div className="card-body bg-dark text-light">
-                <h5 className="card-title">
-                  Personalized Music Recommendations{" "}
-                  <i className="bi bi-music-player mb-3 text-info"></i>
-                </h5>
-                <p className="card-text">
-                  Based on your own music lists, Statify offers smart
-                  recommendations for new music that suits your vibe.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </>
+      </div>
+    </div>
   );
 }
 
