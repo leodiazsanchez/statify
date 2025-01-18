@@ -36,7 +36,7 @@ function WebPlayback(props) {
 
     window.onSpotifyWebPlaybackSDKReady = () => {
       const player = new window.Spotify.Player({
-        name: "Spotify Analytics",
+        name: "Statify",
         getOAuthToken: (cb) => {
           cb(props.token);
         },
@@ -58,9 +58,7 @@ function WebPlayback(props) {
       });
 
       player.addListener("player_state_changed", (state) => {
-        if (!state) {
-          return;
-        }
+        if (!state) return;
 
         setTrack(state.track_window.current_track);
         setPaused(state.paused);
@@ -68,23 +66,29 @@ function WebPlayback(props) {
         setDuration(state.duration);
 
         player.getCurrentState().then((state) => {
-          !state ? setActive(false) : setActive(true);
+          if (!state || state.paused) {
+            setActive(false);
+          } else {
+            setActive(true);
+          }
         });
       });
 
       player.connect();
     };
   }, [token]);
-
   useEffect(() => {
     const interval = setInterval(() => {
       if (!is_paused) {
-        setPosition((prevPosition) => prevPosition + 1000);
+        setPosition((prevPosition) => {
+          const newPosition = prevPosition + 1000;
+          return newPosition !== position ? newPosition : prevPosition;
+        });
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [is_paused]);
+  }, [is_paused, position]);
 
   const handleVolumeChange = (e) => {
     let newVolume = e.target.value;
@@ -94,8 +98,10 @@ function WebPlayback(props) {
 
   const handleProgressChange = (e) => {
     const newPosition = e.target.value;
-    setPosition(newPosition);
-    player.seek(newPosition);
+    if (newPosition !== position) {
+      setPosition(newPosition);
+      player.seek(newPosition);
+    }
   };
 
   const handleSkipForward = () => {
@@ -118,6 +124,21 @@ function WebPlayback(props) {
         });
       }
     });
+  };
+
+  const handleEscape = () => {
+    if (player) {
+      player.pause();
+      setPaused(true);
+    }
+  };
+
+  const handlePlay = () => {
+    if (player) {
+      player.resume();
+      setPaused(false);
+      setActive(true);
+    }
   };
 
   if (!is_active) {
@@ -147,7 +168,12 @@ function WebPlayback(props) {
               <button
                 className="btn-spotify"
                 onClick={() => {
-                  player.togglePlay();
+                  if (is_paused) {
+                    handlePlay();
+                  } else {
+                    player.togglePlay();
+                    setPaused(!is_paused);
+                  }
                 }}
               >
                 {is_paused ? (
@@ -156,26 +182,11 @@ function WebPlayback(props) {
                   <i className="bi bi-pause-fill fs-3"></i>
                 )}
               </button>
+              <button className="btn-spotify" onClick={handleEscape}>
+                <i className="bi bi-escape"></i>
+              </button>
             </div>
           </div>
-
-          {/*<div className="volume-controls d-flex align-items-center justify-content-end mx-3">
-            {volume == 0 ? (
-              <i className="bi bi-volume-mute fs-4"></i>
-            ) : volume < 50 ? (
-              <i className="bi bi-volume-down fs-4"></i>
-            ) : (
-              <i className="bi bi-volume-up fs-4"></i>
-            )}
-            <input
-              type="range"
-              className="slider ms-2 accent"
-              min="0"
-              max="100"
-              value={volume}
-              onChange={handleVolumeChange}
-            />
-          </div>*/}
         </div>
         <input
           className="progress-bar"

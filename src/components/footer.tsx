@@ -6,7 +6,7 @@ function Footer() {
       <div className="col-md-4 d-flex align-items-center">
         <a href="/" className="mb-3 me-2 mb-md-0 text-decoration-none lh-1">
           <span className="text-light">
-            Statify{" "}
+            Statify
             <img
               src={Logo}
               alt="logo"

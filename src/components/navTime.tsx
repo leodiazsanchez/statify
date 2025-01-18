@@ -1,50 +1,54 @@
 import { useState } from "react";
 
 const NavTime = ({ handleClick }) => {
-  const [activeTab, setActiveTab] = useState(0);
+  const [selectedDuration, setSelectedDuration] = useState("4 Weeks");
+
+  const handleSelect = (value, label) => {
+    handleClick(value);
+    setSelectedDuration(label);
+  };
 
   return (
-    <ul className="nav justify-content-center mb-4 gap-3 gap-md-5 d-flex align-items-center m-auto px-3">
-      <li className="nav-item">
-        <button
-          className={`btn-nav ${
-            activeTab === 0 ? "text-accent fs-5 fw-bold" : "text-light"
-          }`}
-          onClick={() => {
-            handleClick(0);
-            setActiveTab(0);
-          }}
-        >
-          4 weeks
-        </button>
-      </li>
-      <li className="nav-item">
-        <button
-          className={`btn-nav ${
-            activeTab === 1 ? "text-accent fs-5 fw-bold" : "text-light"
-          }`}
-          onClick={() => {
-            handleClick(1);
-            setActiveTab(1);
-          }}
-        >
-          6 Months
-        </button>
-      </li>
-      <li className="nav-item">
-        <button
-          className={`btn-nav ${
-            activeTab === 2 ? "text-accent fs-5 fw-bold" : "text-light"
-          }`}
-          onClick={() => {
-            handleClick(2);
-            setActiveTab(2);
-          }}
-        >
-          1 Year
-        </button>
-      </li>
-    </ul>
+    <div className="dropdown mx-auto px-3 mb-3">
+      <button
+        className="btn signIn text-light fw-semibold rounded-pill dropdown-toggle"
+        type="button"
+        id="dropdownMenuButton"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        {selectedDuration}
+      </button>
+      <ul
+        className="dropdown-menu dropdown-menu-dark"
+        aria-labelledby="dropdownMenuButton"
+      >
+        <li>
+          <button
+            className="dropdown-item"
+            onClick={() => handleSelect(0, "4 Weeks")}
+          >
+            4 Weeks
+          </button>
+        </li>
+        <li>
+          <button
+            className="dropdown-item"
+            onClick={() => handleSelect(1, "6 Months")}
+          >
+            6 Months
+          </button>
+        </li>
+        <li>
+          <button
+            className="dropdown-item"
+            onClick={() => handleSelect(2, "1 Year")}
+          >
+            1 Year
+          </button>
+        </li>
+      </ul>
+    </div>
   );
 };
 

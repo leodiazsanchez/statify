@@ -24,22 +24,17 @@ const NavbarContent = ({ profile, loading }) => (
         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
           <li className="nav-item">
             <NavLink className="nav-link" to="/artists">
-              Top Artists
+              Artists
             </NavLink>
           </li>
           <li className="nav-item">
             <NavLink className="nav-link" to="/tracks">
-              Top Tracks
+              Tracks
             </NavLink>
           </li>
           <li className="nav-item">
             <NavLink className="nav-link" to="/genres">
-              Top Genres
-            </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink className="nav-link" to="/recommendations">
-              Recommendations
+              Genres
             </NavLink>
           </li>
         </ul>
@@ -51,7 +46,7 @@ const NavbarContent = ({ profile, loading }) => (
           ) : profile ? (
             <div className="dropdown">
               <button
-                className="btn profileButton rounded-pill text-light fw-bold dropdown-toggle"
+                className="btn profileButton rounded-pill text-light fw-semibold dropdown-toggle"
                 type="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
@@ -73,10 +68,10 @@ const NavbarContent = ({ profile, loading }) => (
             </div>
           ) : (
             <a
-              className="btn signIn text-light fw-bold rounded-pill"
+              className="btn signIn text-light fw-semibold rounded-pill"
               href="/api/login"
             >
-              Sign in
+              <i className="bi bi-spotify"></i> Sign in with Spotify
             </a>
           )}
         </div>

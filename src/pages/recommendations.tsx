@@ -107,13 +107,13 @@ const Recommendations = () => {
 
   const PlayListsGrid = () => {
     if (!playlists || playlists.length === 0) {
-      return <p>No playlists available.</p>; // Fallback UI for empty playlists
+      return <p>No playlists available.</p>; 
     }
 
     return (
       <div className="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-3 row-cols-xl-4 g-3">
         {playlists
-          .filter((playlist) => playlist && playlist.id) // Filter out invalid entries
+          .filter((playlist) => playlist && playlist.id) 
           .map((playlist) => (
             <div key={playlist.id}>
               <div
@@ -126,8 +126,8 @@ const Recommendations = () => {
                 onClick={() => setActivePlaylist(playlist)}
               >
                 <img
-                  src={playlist.images[0]?.url || "default-image.jpg"} // Fallback image
-                  alt={playlist.name || "Unnamed Playlist"} // Fallback alt text
+                  src={playlist.images[0]?.url || "default-image.jpg"} 
+                  alt={playlist.name || "Unnamed Playlist"} 
                   className="card-img playlist-image w-100 h-100 darken-pl"
                 />
                 <div className="card-img-overlay p-1 justify-content-end">

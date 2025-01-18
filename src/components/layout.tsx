@@ -9,8 +9,10 @@ const Layout = () => {
   return (
     <>
       <Navbar />
-      <main className="px-2 px-md-5">
-        <Outlet />
+      <main className="px-md-5">
+        <div className="container-fluid">
+          <Outlet />
+        </div>
       </main>
       {token ? <WebPlayback token={token}></WebPlayback> : <></>}
     </>
