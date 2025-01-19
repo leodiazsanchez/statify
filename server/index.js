@@ -26,6 +26,7 @@ app.get("/login", (_, res) => {
   const scope =
     "streaming user-read-private user-read-email user-top-read user-read-playback-state user-modify-playback-state playlist-read-private playlist-modify-public playlist-modify-private";
   const state = generateRandomString(16);
+  const show_dialog = true;
 
   const authQueryParams = new URLSearchParams({
     response_type: "code",
@@ -33,6 +34,7 @@ app.get("/login", (_, res) => {
     scope,
     redirect_uri: spotifyRedirectUri,
     state,
+    show_dialog,
   });
 
   res.redirect(
