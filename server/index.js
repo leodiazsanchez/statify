@@ -12,6 +12,7 @@ const spotifyClientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 const spotifyRedirectUri = "http://localhost:3000/api/callback";
 
 let accessToken = "";
+let refreshToken = "";
 
 const generateRandomString = (length) => {
   const chars =
@@ -61,6 +62,8 @@ app.get("/callback", (req, res) => {
   request.post(authOptions, (error, response, body) => {
     if (!error && response.statusCode === 200) {
       accessToken = body.access_token;
+      refreshToken = body.refresh_token;
+      console.log(body);
       res.redirect("/");
     } else {
       console.error("Error fetching token:", response?.statusText);
@@ -69,10 +72,19 @@ app.get("/callback", (req, res) => {
   });
 });
 
-app.get("/token", (_, res) => res.json({ access_token: accessToken }));
+app.get("/token", (_, res) => {
+  try {
+    if (!accessToken || !refreshToken) {
+      return res.status(400).json({ error: "Tokens not found" });
+    }
+    res.json({ access_token: accessToken, refresh_token: refreshToken });
+  } catch (err) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
-app.get("/refresh_token", (req, res) => {
-  const refresh_token = req.query.refresh_token;
+app.get("/refresh_token/:refresh_token", (req, res) => {
+  const refresh_token = req.params.refresh_token;
 
   const authOptions = {
     url: "https://accounts.spotify.com/api/token",
@@ -90,13 +102,24 @@ app.get("/refresh_token", (req, res) => {
   };
 
   request.post(authOptions, (error, response, body) => {
-    if (!error && response.statusCode === 200) {
-      accessToken = body.access_token;
-      refreshToken = body.refresh_token;
-      res.json({ access_token: accessToken, refresh_token: refreshToken });
+    if (error) {
+      console.error("Error making request:", error.message);
+      return res
+        .status(500)
+        .send("An error occurred while refreshing the token");
+    }
+
+    if (response.statusCode === 200) {
+      const { access_token, refresh_token: new_refresh_token } = body;
+      res.json({ access_token, refresh_token: new_refresh_token });
     } else {
-      console.error("Error refreshing token:", response?.statusText);
-      res.status(500).send("Failed to refresh token");
+      console.error(
+        "Error refreshing token:",
+        response.statusCode,
+        response.statusMessage,
+        body
+      );
+      res.status(response.statusCode).send(body || "Failed to refresh token");
     }
   });
 });
@@ -189,6 +212,7 @@ app.get("/recommendations/:playlistId", async (req, res) => {
 
 app.get("/logout", (_, res) => {
   accessToken = "";
+  refreshToken = "";
   res.redirect("/");
 });
 
@@ -249,5 +273,4 @@ app.post("/addTrack/:playlistId/:trackUris", async (req, res) => {
   }
 });
 
-// Start the Server
 app.listen(port, () => console.log(`Listening on http://localhost:${port}`));

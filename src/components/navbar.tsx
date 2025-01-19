@@ -88,27 +88,26 @@ export const Navbar = () => {
 
   useEffect(() => {
     const init = async () => {
-      if (token) {
-        setLoading(true);
-        try {
-          const res = await apiClient.get("api/profile");
-          if (res.status !== 200) throw new Error("Failed to fetch profile");
-          setProfile(res.data);
-        } catch (error) {
-          console.error("Error fetching profile:", error);
-          setProfile(null);
-        } finally {
-          setLoading(false);
-        }
-      } else {
+      setLoading(true);
+      if (!token) {
         setProfile(null);
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const res = await apiClient.get("api/profile");
+        if (res.status !== 200) throw new Error("Failed to fetch profile");
+        setProfile(res.data);
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+        setProfile(null);
+      } finally {
         setLoading(false);
       }
     };
 
-    if (token != undefined) {
-      init();
-    }
+    init();
   }, [token]);
 
   return <NavbarContent profile={profile} loading={loading} />;

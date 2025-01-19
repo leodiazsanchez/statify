@@ -1,4 +1,3 @@
-import axios from "axios";
 import {
   createContext,
   useContext,
@@ -10,29 +9,38 @@ import {
 const AuthContext = createContext(null);
 
 const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState<string>();
+  const [token, setToken] = useState<string | null>(null);
+  const [refreshToken, setRefreshToken] = useState<string | null>(null);
 
   useLayoutEffect(() => {
-    const fetchToken = async () => {
+    const fetchTokens = async () => {
       try {
         const response = await fetch("/api/token");
         const json = await response.json();
-        setToken(json.access_token);
+        if (json.access_token && json.refresh_token) {
+          setToken(json.access_token);
+          setRefreshToken(json.refresh_token);
+        } else {
+          console.error("Tokens not found in the response");
+        }
       } catch (error) {
-        console.error("Failed to fetch token:", error);
+        console.error("Failed to fetch tokens:", error);
         setToken(null);
+        setRefreshToken(null);
       }
     };
 
-    fetchToken();
+    fetchTokens();
   }, []);
 
   const contextValue = useMemo(
     () => ({
       token,
       setToken,
+      refreshToken,
+      setRefreshToken,
     }),
-    [token]
+    [token, refreshToken]
   );
 
   return (
