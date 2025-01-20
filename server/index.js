@@ -69,7 +69,7 @@ app.get("/callback", (req, res) => {
       res.redirect("/");
     } else {
       console.error("Error fetching token:", response?.statusText);
-      res.status(500).send("Authentication failed");
+      res.redirect("/");
     }
   });
 });
